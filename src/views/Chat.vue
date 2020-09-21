@@ -1,22 +1,38 @@
 <template>
-  <div class="chat">
-    <h2>Chat App</h2>
-    <div class="chat-window">
-      <div class="output">
-        <p v-if="typing">
-          <em>{{ typing }} is typing a message...</em>
-        </p>
-        <p><strong>Budi : </strong>Hai Semua</p>
-      </div>
-    </div>
-    <input
-      class="message"
-      type="text"
-      v-model="message"
-      placeholder="Message"
-    />
-    <button class="send">Send</button>
-  </div>
+  <b-container class="bv-example-row">
+    <b-row>
+      <b-col cols="2">
+        <div class="chat">
+          <div class="chat-window">
+            <p class="room">User 1</p>
+            <hr />
+            <p class="room">User 2</p>
+            <hr />
+          </div>
+        </div>
+      </b-col>
+      <b-col cols="10"
+        ><div class="chat">
+          <!-- <h2>Chat App</h2> -->
+          <div class="chat-window">
+            <div class="output">
+              <p v-if="typing">
+                <em>{{ typing }} is typing a message...</em>
+              </p>
+              <p><strong>Budi : </strong>Hai Semua</p>
+            </div>
+          </div>
+          <input
+            class="message"
+            type="text"
+            v-model="message"
+            placeholder="Message"
+          />
+          <button class="send">Send</button>
+        </div></b-col
+      >
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -33,10 +49,13 @@ export default {
 <style scoped>
 .chat {
   max-width: 600px;
-  margin: 30px auto;
   border: 1px solid #ddd;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
   border-radius: 2px;
+}
+
+.room {
+  margin: 10px 0;
 }
 
 h2 {
