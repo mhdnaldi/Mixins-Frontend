@@ -6,6 +6,7 @@
           <b-form-input
             id="input-1"
             required
+            v-model="form.username"
             placeholder="Enter username"
           ></b-form-input>
         </b-form-group>
@@ -19,6 +20,7 @@
           <b-form-input
             id="input-2"
             type="email"
+            v-model="form.email"
             required
             placeholder="Enter email"
           ></b-form-input>
@@ -32,6 +34,7 @@
           <b-form-input
             id="input-3"
             type="password"
+            v-model="form.password"
             required
             placeholder="Enter password"
           ></b-form-input>
@@ -64,9 +67,30 @@ export default {
   name: 'Login',
   data: () => ({
     form: {
+      username: '',
+      email: '',
+      password: '',
       room: null
     }
-  })
+  }),
+  methods: {
+    onSubmit() {
+      this.$router.push({
+        name: 'Chat',
+        params: {
+          ...this.form
+        }
+      })
+    },
+    onReset() {
+      this.form = {
+        username: '',
+        email: '',
+        password: '',
+        room: null
+      }
+    }
+  }
 }
 </script>
 

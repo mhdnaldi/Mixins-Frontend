@@ -11,36 +11,100 @@
           </div>
         </div>
       </b-col>
-      <b-col cols="10"
-        ><div class="chat">
+      <b-col cols="10">
+        <div class="chat">
           <!-- <h2>Chat App</h2> -->
           <div class="chat-window">
             <div class="output">
               <p v-if="typing">
                 <em>{{ typing }} is typing a message...</em>
               </p>
-              <p><strong>Budi : </strong>Hai Semua</p>
+              <p v-for="(value, index) in messages" :key="index">
+                <strong>{{ value.username }} :</strong>
+                {{ value.message }}
+              </p>
             </div>
           </div>
-          <input
-            class="message"
-            type="text"
-            v-model="message"
-            placeholder="Message"
-          />
-          <button class="send">Send</button>
-        </div></b-col
-      >
+          <input class="message" type="text" v-model="message" placeholder="Message" />
+          <button class="send" @click="sendMessages">Send</button>
+        </div>
+      </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
+import io from 'socket.io-client'
 export default {
   name: 'Chat',
   data() {
     return {
-      message: ''
+      socket: io('http://localhost:3000'),
+      username: '',
+      room: '',
+      message: '',
+      messages: [
+        {
+          username: 'Muhammad Naldi',
+          message: 'Yo'
+        }
+      ],
+      typing: false
+    }
+  },
+  watch: {
+    message(value) {
+      value
+        ? this.socket.emit('typing', this.username)
+        : this.socket.emit('typing', false)
+    }
+  },
+  mounted() {
+    if (!this.$route.params.username) {
+      this.$router.push('/about')
+    }
+
+    // nerima data dari form
+    this.username = this.$route.params.username
+    this.room = this.$route.params.room
+    // --------------------------
+
+    // ----------------------------------------
+    // CHAT ROOM
+    this.socket.on('chatMessage', data => {
+      this.messages.push(data)
+    })
+
+    // BOT
+    this.socket.emit('welcomeMessage', {
+      username: this.username,
+      room: this.room
+    })
+
+    // is Typing
+    this.socket.on('typingMessage', data => {
+      this.typing = data
+    })
+    // ----------------------------------------
+  },
+  methods: {
+    sendMessages() {
+      // Global message : semua orang dapat melihat
+      // this.socket.emit('globalMessage', setData)
+
+      // Private message : hanya kita yg dapat melihat
+      // this.socket.emit('privateMessage', setData)
+
+      // Broadcast message: hanya orang lain yg dapat melihat
+      // this.socket.emit('broadcastMessage', setData)
+
+      const setData = {
+        username: this.username,
+        message: this.message,
+        room: this.room
+      }
+      this.socket.emit('roomMessage', setData)
+      this.message = ''
     }
   }
 }
