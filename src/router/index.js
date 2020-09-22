@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Chat from '../views/Chat.vue'
 import Login from '../views/auth/Login.vue'
+import Register from '../views/auth/Register.vue'
+import Forgot from '../views/auth/Forgot.vue'
 
 Vue.use(VueRouter)
 
@@ -30,6 +32,16 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
+    path: '/forgot-password',
+    name: 'Forgot',
+    component: Forgot
   }
 ]
 
