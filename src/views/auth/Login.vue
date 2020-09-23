@@ -56,23 +56,19 @@
               style="color: #7E98DF; font-size: 14=6px"
             >
               Forgot password?
-            </p></router-link
-          >
+            </p>
+          </router-link>
         </b-col>
       </b-row>
       <b-row class="mt-4">
         <b-col cols="12">
-          <b-button class="btn-login" type="submit" @click="onSubmit"
-            >Login</b-button
-          >
+          <b-button class="btn-login" @click="onSubmit">Login</b-button>
         </b-col>
       </b-row>
       <b-row class="mt-4">
         <b-col cols="12">
           <div class="lines"></div>
-          <p text-center style="display: inline-block; color:#848484">
-            MIXINS
-          </p>
+          <p text-center style="display: inline-block; color:#848484">MIXINS</p>
           <div class="lines"></div>
         </b-col>
       </b-row>
@@ -85,13 +81,11 @@
       </b-row>
       <b-row>
         <b-col cols="12">
-          <p class=" mt-3" style="color: #313131; font-size: 14">
+          <p class="mt-3" style="color: #313131; font-size: 14">
             Don't have an account?
-            <router-link to="/register"
-              ><span style="color: #7e98df; cursor: pointer"
-                >Sign up</span
-              ></router-link
-            >
+            <router-link to="/register">
+              <span style="color: #7e98df; cursor: pointer">Sign up</span>
+            </router-link>
           </p>
         </b-col>
       </b-row>
@@ -100,6 +94,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'Login',
   data() {
@@ -111,8 +106,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['loginUser']),
     onSubmit() {
-      console.log(this.form)
+      this.loginUser(this.form)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     onReset() {
       this.form = {

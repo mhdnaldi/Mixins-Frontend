@@ -8,7 +8,7 @@
       </b-row>
       <b-row>
         <b-col cols="12">
-          <p class="text-left mt-4" style="color: #232323; font-size: 14px">
+          <p class="text-left mt-4" style="color: #232323; font-size: 14px;">
             Let's create your account!
           </p>
         </b-col>
@@ -39,7 +39,7 @@
               label-for="input-1"
             >
               <b-form-input
-                class="input "
+                class="input"
                 id="input-1"
                 type="text"
                 v-model="form.user_phone"
@@ -80,17 +80,13 @@
       </b-row>
       <b-row class="mt-4">
         <b-col cols="12">
-          <b-button class="btn-login" type="submit" @click="onSubmit"
-            >Register</b-button
-          >
+          <b-button class="btn-login" @click="onSubmit">Register</b-button>
         </b-col>
       </b-row>
       <b-row class="mt-4">
         <b-col cols="12">
           <div class="lines"></div>
-          <p text-center style="display: inline-block; color:#848484">
-            MIXINS
-          </p>
+          <p text-center style="display: inline-block; color:#848484">MIXINS</p>
           <div class="lines"></div>
         </b-col>
       </b-row>
@@ -106,6 +102,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'Register',
   data() {
@@ -119,9 +116,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['registerUser']),
     onSubmit() {
-      console.log(this.form)
-      this.$router.push('/login')
+      this.registerUser(this.form)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      // this.$router.push('/login')
     },
     onReset() {
       this.form = {

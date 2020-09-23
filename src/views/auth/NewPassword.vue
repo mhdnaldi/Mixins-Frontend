@@ -9,7 +9,7 @@
       <b-row>
         <b-col cols="12">
           <p class="text-left mt-5" style="color: #232323; font-size: 14px">
-            You'll get message soon on your email
+            Confirm your new password!
           </p>
         </b-col>
       </b-row>
@@ -20,14 +20,28 @@
               class="text-left"
               style="color: #848484; font-size:14px"
               id="input-group-1"
-              label="Email"
+              label="Keys"
               label-for="input-1"
             >
               <b-form-input
                 class="input"
                 id="input-1"
-                type="email"
-                v-model="user_email"
+                type="text"
+                v-model="keys"
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              class="text-left"
+              style="color: #848484; font-size:14px"
+              id="input-group-1"
+              label="New password"
+              label-for="input-1"
+            >
+              <b-form-input
+                class="input"
+                id="input-1"
+                type="password"
+                v-model="password"
               ></b-form-input>
             </b-form-group>
           </b-form>
@@ -35,7 +49,9 @@
       </b-row>
       <b-row class="mt-4">
         <b-col cols="12">
-          <b-button class="btn-login" @click="onSubmit">Send</b-button>
+          <b-button class="btn-login" type="submit" @click="onSubmit"
+            >Submit</b-button
+          >
         </b-col>
       </b-row>
     </b-container>
@@ -48,13 +64,18 @@ export default {
   name: 'Forgot',
   data() {
     return {
-      user_email: ''
+      keys: '',
+      password: ''
     }
   },
   methods: {
-    ...mapActions(['forgotPassword']),
+    ...mapActions(['newPassword']),
     onSubmit() {
-      this.forgotPassword(this.user_email)
+      const setData = {
+        keys: this.keys,
+        user_password: this.password
+      }
+      this.newPassword(setData)
     }
   }
 }
