@@ -86,7 +86,7 @@ export default {
   width: 500px;
   height: 710px;
   background-color: #fff;
-  margin: 50px auto;
+  margin: 150px auto;
 }
 
 .title {

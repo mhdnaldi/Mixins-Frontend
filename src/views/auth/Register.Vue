@@ -144,7 +144,7 @@ export default {
   width: 500px;
   height: 710px;
   background-color: #fff;
-  margin: -50px auto 150px;
+  margin: 150px auto;
 }
 
 .title {

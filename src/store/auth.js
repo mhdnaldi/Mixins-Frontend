@@ -91,7 +91,9 @@ export default {
     forgotPassword(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:3000/users/forgot-password', payload)
+          .post(
+            `http://localhost:3000/users/forgot-password?user_email=${payload}`
+          )
           .then(res => {
             console.log(res.data)
             resolve(res.data)

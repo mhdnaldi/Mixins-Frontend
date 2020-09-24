@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Mixins from '../views/Mixins.vue'
 import About from '../views/About.vue'
 import Chat from '../views/Chat.vue'
 import Login from '../views/auth/Login.vue'
@@ -17,6 +18,11 @@ const routes = [
     name: 'Home',
     component: Home,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/mixins',
+    name: 'Mixins',
+    component: Mixins
   },
   {
     path: '/about',
