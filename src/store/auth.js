@@ -120,6 +120,9 @@ export default {
   getters: {
     userData(state) {
       return state.userData
+    },
+    isLogin(state) {
+      return state.token !== null
     }
   }
 }

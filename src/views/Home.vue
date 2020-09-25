@@ -2,7 +2,7 @@
   <div class="home">
     <h1>Maps</h1>
     <GmapMap
-      :center="{lat: coordinates.lat, lng: coordinates.lng }"
+      :center="{ lat: coordinates.lat, lng: coordinates.lng }"
       :zoom="10"
       map-type-id="terrain"
       style="width: 80%; height: 600px; margin:40px auto"
