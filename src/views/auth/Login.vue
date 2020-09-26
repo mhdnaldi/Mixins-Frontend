@@ -110,6 +110,7 @@ export default {
     onSubmit() {
       this.loginUser(this.form)
         .then(res => {
+          this.$router.push('/mixins')
           console.log(res)
         })
         .catch(err => {

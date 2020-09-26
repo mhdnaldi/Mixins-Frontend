@@ -22,7 +22,8 @@ const routes = [
   {
     path: '/mixins',
     name: 'Mixins',
-    component: Mixins
+    component: Mixins,
+    meta: { requiresAuth: true }
   },
   {
     path: '/about',

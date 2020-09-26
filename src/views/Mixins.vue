@@ -16,7 +16,98 @@
                 triggers="click"
                 placement="leftbottom"
               >
-                <div class="px-2 py-2" style="cursor: pointer">
+                <div
+                  class="px-2 py-2"
+                  style="cursor: pointer"
+                  v-b-modal.modal-sm.modal-1
+                >
+                  <!-- MODAL PROFILE -->
+                  <b-modal id="modal-1" title="Edit profile" hide-footer>
+                    <div>
+                      <b-row align-content="center">
+                        <b-col cols lg="12"
+                          ><div class="img-profile center">
+                            <img
+                              class="img-profile center"
+                              :src="port + profile[0].user_image"
+                              alt=""
+                            /></div
+                        ></b-col>
+                      </b-row>
+                      <b-row align-content="center" class="mt-3">
+                        <b-col cols lg="12"
+                          ><div class="center">
+                            <h6
+                              style="font-size: 20px; font-weight:500; text-align: center"
+                            >
+                              {{ profile[0].user_name }}
+                            </h6>
+                          </div></b-col
+                        >
+                      </b-row>
+                      <b-row align-content="center">
+                        <b-col cols lg="12"
+                          ><div class="center">
+                            <p style="text-align: center">
+                              {{ profile[0].user_email }}
+                            </p>
+                          </div></b-col
+                        >
+                      </b-row>
+                      <b-row align-content="center">
+                        <b-col cols lg="12"
+                          ><div class="center">
+                            <p style="text-align: center">
+                              {{ profile[0].user_phone }}
+                            </p>
+                          </div></b-col
+                        >
+                      </b-row>
+                    </div>
+                    <div>
+                      <b-form>
+                        <b-form-group id="input-group-1">
+                          <b-form-input
+                            id="input-1"
+                            v-model="form.user_password"
+                            type="password"
+                            placeholder="New password"
+                          ></b-form-input>
+                        </b-form-group>
+
+                        <b-form-group id="input-group-2">
+                          <b-form-input
+                            id="input-2"
+                            required
+                            v-model="form.user_name"
+                            placeholder="Enter name"
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-form-group id="input-group-2">
+                          <b-form-input
+                            id="input-2"
+                            placeholder="Enter Phone"
+                            v-model="form.user_phone"
+                          ></b-form-input>
+                        </b-form-group>
+                        <b-form-file
+                          placeholder="Choose a file or drop it here..."
+                          drop-placeholder="Drop file here..."
+                          v-model="form.user_image"
+                          @change="handleFile"
+                        ></b-form-file>
+                      </b-form>
+                    </div>
+                    <div class="mt-3 text-right">
+                      <b-button
+                        variant="success"
+                        class="mx-2"
+                        @click="editProfile"
+                        >Edit</b-button
+                      >
+                      <b-button variant="danger">Cancel</b-button>
+                    </div>
+                  </b-modal>
                   <img
                     style="display: inline-block"
                     src="../assets/img/Settings.png"
@@ -40,7 +131,32 @@
                     Contacts
                   </p>
                 </div>
-                <div class="px-2 py-2" style="cursor: pointer">
+                <div
+                  class="px-2 py-2"
+                  v-b-modal.modal-2
+                  style="cursor: pointer"
+                >
+                  <b-modal id="modal-2" title="Add Friends" hide-footer>
+                    <b-form>
+                      <b-form-group id="input-group-1">
+                        <b-form-input
+                          id="input-1"
+                          type="email"
+                          required
+                          placeholder="Your friends email"
+                          v-model="friendsEmail"
+                        ></b-form-input>
+                      </b-form-group>
+                    </b-form>
+                    <div class="mt-3 text-right">
+                      <b-button
+                        variant="success"
+                        class="mx-2"
+                        @click="addFriends"
+                        >Add</b-button
+                      >
+                    </div>
+                  </b-modal>
                   <img
                     style="display: inline-block; width: 22px; "
                     src="../assets/img/Invite friends.png"
@@ -57,13 +173,20 @@
           </b-row>
         </b-container>
         <b-row align-content="center">
-          <b-col cols lg="12"><div class="img-profile center"></div></b-col>
+          <b-col cols lg="12"
+            ><div class="img-profile center">
+              <img
+                class="img-profile center"
+                :src="port + profile[0].user_image"
+                alt=""
+              /></div
+          ></b-col>
         </b-row>
         <b-row align-content="center" class="mt-3">
           <b-col cols lg="12"
             ><div class="center">
               <h6 style="font-size: 20px; font-weight:500;">
-                Muhammad Naldi
+                {{ profile[0].user_name }}
               </h6>
             </div></b-col
           >
@@ -71,7 +194,7 @@
         <b-row align-content="center">
           <b-col cols lg="12"
             ><div class="center">
-              <p>@mhdnaldi</p>
+              <p>{{ profile[0].user_email }}</p>
             </div></b-col
           >
         </b-row>
@@ -108,7 +231,7 @@
             </div></b-col
           >
         </b-row>
-        <div class="mt-2 scrollbar" style="height: 320px; overflow-x:hidden">
+        <div class="mt-4 scrollbar" style="height: 320px; overflow-x:hidden">
           <b-row class="mt-2">
             <b-col
               ><div class="flex">
@@ -243,19 +366,65 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 // import Empty from '../components/EmptyChat'
 export default {
   name: 'Mixins',
   components: {
     // Empty
   },
-  data() {
-    return {}
+  created() {
+    this.getUser()
   },
-  methods: {},
+  data() {
+    return {
+      form: {
+        user_name: '',
+        user_password: '',
+        user_phone: '',
+        user_image: {}
+      },
+      port: 'http://localhost:3000/',
+      friendsEmail: ''
+    }
+  },
+  methods: {
+    ...mapActions(['editUser', 'getUserById']),
+    handleFile(event) {
+      this.form.user_image = event.target.files[0]
+    },
+    addFriends() {
+      console.log(this.friendsEmail)
+    },
+    editProfile() {
+      const userId = this.user.user_id
+      const data = new FormData()
+      data.append('user_name', this.form.user_name)
+      data.append('user_password', this.form.user_password)
+      data.append('user_phone', this.form.user_phone)
+      data.append('user_image', this.form.user_image)
+      const setData = {
+        user_id: userId,
+        form: data
+      }
+      this.editUser(setData)
+        .then(res => {
+          this.getUserById(userId)
+          alert(res)
+          setTimeout(() => {
+            this.$router.push('/mixins')
+          }, 2000)
+        })
+        .catch(err => {
+          alert(err)
+        })
+    },
+    getUser() {
+      this.getUserById(this.user.user_id)
+    }
+  },
   computed: {
-    ...mapGetters({ user: 'userData' })
+    ...mapGetters({ user: 'userData', profile: 'user', msg: 'msg' })
   }
 }
 </script>
@@ -363,7 +532,7 @@ export default {
   width: 82px;
   height: 82px;
   border-radius: 30px;
-  background-color: red;
+  /* background-color: red; */
 }
 
 .img-profile-chat {
