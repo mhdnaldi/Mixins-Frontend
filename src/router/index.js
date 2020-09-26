@@ -39,7 +39,8 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: { requiresVisitor: true }
   },
   {
     path: '/register',
@@ -76,7 +77,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.matched.some(record => record.meta.requiresVisitor)) {
     if (store.getters.isLogin) {
       next({
-        path: '/'
+        path: '/mixins'
       })
     } else {
       next()

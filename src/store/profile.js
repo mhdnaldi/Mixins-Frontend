@@ -66,6 +66,22 @@ export default {
             reject(err.response.data.msg)
           })
       })
+    },
+    searchFriends(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(
+            `http://localhost:3000/chat/search-friends/${payload.user_id}`,
+            payload.user_name
+          )
+          .then(res => {
+            console.log(res)
+            resolve(res.data.msg)
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      })
     }
   },
   getters: {

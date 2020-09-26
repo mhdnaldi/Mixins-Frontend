@@ -105,7 +105,7 @@
                         @click="editProfile"
                         >Edit</b-button
                       >
-                      <b-button variant="danger" @click="logoff"
+                      <b-button variant="danger" @click="logout"
                         >Logout</b-button
                       >
                     </div>
@@ -204,7 +204,12 @@
           <b-row align-content="center" class="mt-4">
             <b-col cols lg="2">
               <div class="center">
-                <img class="search" src="../assets/img/Search.png" alt="" />
+                <img
+                  @click="search"
+                  class="search"
+                  src="../assets/img/Search.png"
+                  alt=""
+                />
               </div>
             </b-col>
             <b-col cols lg="8">
@@ -214,6 +219,7 @@
                     class="form"
                     id="input-1"
                     type="email"
+                    v-model="searchName"
                     placeholder="Search name ..."
                   ></b-form-input>
                 </b-form></div
@@ -325,7 +331,8 @@ export default {
         user_image: {}
       },
       port: 'http://localhost:3000/',
-      friendsEmail: ''
+      friendsEmail: '',
+      searchName: ''
     }
   },
   methods: {
@@ -334,7 +341,8 @@ export default {
       'getUserById',
       'addFriend',
       'logout',
-      'getAllFriends'
+      'getAllFriends',
+      'searchFriends'
     ]),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
@@ -375,11 +383,16 @@ export default {
     getUser() {
       this.getUserById(this.user.user_id)
     },
-    logoff() {
-      this.logout()
-    },
     myFriends() {
       this.getAllFriends(this.user.user_id)
+    },
+    search() {
+      const setData = {
+        user_id: this.user.user_id,
+        user_name: this.searchName
+      }
+      // console.log(setData)
+      this.searchFriends(setData)
     }
   },
   computed: {
