@@ -3,15 +3,33 @@ import axios from 'axios'
 export default {
   state: {
     user: [],
-    msg: ''
+    msg: '',
+    myFriends: []
   },
   mutations: {
     setUser(state, payload) {
       state.user = payload.data
       state.msg = payload.msg
+    },
+    setFriends(state, payload) {
+      console.log(payload)
+      state.myFriends = payload
     }
   },
   actions: {
+    getAllFriends(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`http://localhost:3000/chat/get-friends/${payload}`)
+          .then(res => {
+            context.commit('setFriends', res.data.data)
+            resolve(res.data.msg)
+          })
+          .catch(err => {
+            reject(err.response)
+          })
+      })
+    },
     getUserById(context, payload) {
       return new Promise((resolve, reject) => {
         axios
@@ -36,6 +54,18 @@ export default {
             reject(err.response.data.msg)
           })
       })
+    },
+    addFriend(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:3000/chat/add-friends', payload)
+          .then(res => {
+            resolve(res.data.msg)
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      })
     }
   },
   getters: {
@@ -44,6 +74,9 @@ export default {
     },
     msg(state) {
       return state.msg
+    },
+    myFriends(state) {
+      return state.myFriends
     }
   }
 }

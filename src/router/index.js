@@ -39,26 +39,22 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
-    meta: { requiresVisitor: true }
+    component: Login
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register,
-    meta: { requiresVisitor: true }
+    component: Register
   },
   {
     path: '/forgot-password',
     name: 'Forgot',
-    component: Forgot,
-    meta: { requiresVisitor: true }
+    component: Forgot
   },
   {
     path: '/new-password',
     name: 'NewPassword',
-    component: NewPassword,
-    meta: { requiresVisitor: true }
+    component: NewPassword
   }
 ]
 

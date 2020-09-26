@@ -105,7 +105,9 @@
                         @click="editProfile"
                         >Edit</b-button
                       >
-                      <b-button variant="danger">Cancel</b-button>
+                      <b-button variant="danger" @click="logoff"
+                        >Logout</b-button
+                      >
                     </div>
                   </b-modal>
                   <img
@@ -225,91 +227,29 @@
         <b-row class="mt-4">
           <b-col
             ><div>
-              <b-button class="btn btn-primary button">All</b-button
+              <b-button class="btn btn-primary button" @click="myFriends"
+                >All</b-button
               ><b-button class="btn btn-primary button">Important</b-button
               ><b-button class="btn btn-primary button">Unread</b-button>
             </div></b-col
           >
         </b-row>
         <div class="mt-4 scrollbar" style="height: 320px; overflow-x:hidden">
-          <b-row class="mt-2">
+          <!-- PREEEN -->
+          <b-row class="mt-2" v-for="(value, index) in friends" :key="index">
             <b-col
               ><div class="flex">
-                <div class="profiles"></div>
-                <div class="mt-1">
-                  <h6 style="text-align: left; font-size: 18px">
-                    Muhammad Naldi
-                  </h6>
-                  <p style="text-align: left; margin-top: px">wkwkwkwkk</p>
+                <div class="profiles">
+                  <img class="profiles" :src="port + value.user_image" alt="" />
                 </div>
-                <div class="mt-1">
-                  <p>15:20</p>
-                  <div class="notif"><p>1</p></div>
-                </div>
-              </div></b-col
-            >
-          </b-row>
-          <b-row class="mt-2">
-            <b-col
-              ><div class="flex">
-                <div class="profiles"></div>
-                <div class="mt-1">
-                  <h6 style="text-align: left; font-size: 18px">
-                    Muhammad Naldi
-                  </h6>
-                  <p style="text-align: left; margin-top: px">wkwkwkwkk</p>
-                </div>
-                <div class="mt-1">
-                  <p>15:20</p>
-                  <div class="notif"><p>1</p></div>
-                </div>
-              </div></b-col
-            >
-          </b-row>
-          <b-row class="mt-2">
-            <b-col
-              ><div class="flex">
-                <div class="profiles"></div>
-                <div class="mt-1">
-                  <h6 style="text-align: left; font-size: 18px">
-                    Muhammad Naldi
-                  </h6>
-                  <p style="text-align: left; margin-top: px">wkwkwkwkk</p>
-                </div>
-                <div class="mt-1">
-                  <p>15:20</p>
-                  <div class="notif"><p>1</p></div>
-                </div>
-              </div></b-col
-            >
-          </b-row>
-          <b-row class="mt-2">
-            <b-col
-              ><div class="flex">
-                <div class="profiles"></div>
-                <div class="mt-1">
-                  <h6 style="text-align: left; font-size: 18px">
-                    Muhammad Naldi
-                  </h6>
-                  <p style="text-align: left; margin-top: px">wkwkwkwkk</p>
-                </div>
-                <div class="mt-1">
-                  <p>15:20</p>
-                  <div class="notif"><p>1</p></div>
-                </div>
-              </div></b-col
-            >
-          </b-row>
-          <b-row class="mt-2">
-            <b-col
-              ><div class="flex">
-                <div class="profiles"></div>
                 <div class="mt-1">
                   <div></div>
                   <h6 style="text-align: left; font-size: 18px; ">
-                    Muhammad Naldi
+                    {{ value.user_name }}
                   </h6>
-                  <p style="text-align: left; margin-top: px">wkwkwkwkk</p>
+                  <p style="text-align: left; margin-top: px">
+                    {{ value.user_phone }}
+                  </p>
                 </div>
                 <div class="mt-1">
                   <p>15:20</p>
@@ -355,7 +295,7 @@
             ></div>
             <div class="sender ">
               <p style="padding: 3px 12px 0 12px; margin-bottom: 5px ">
-                Halooooo0000000000000000000000000
+                Woyyy
               </p>
             </div>
           </div>
@@ -389,12 +329,28 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['editUser', 'getUserById']),
+    ...mapActions([
+      'editUser',
+      'getUserById',
+      'addFriend',
+      'logout',
+      'getAllFriends'
+    ]),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
     },
     addFriends() {
-      console.log(this.friendsEmail)
+      const setData = {
+        user_id: this.user.user_id,
+        friends_email: this.friendsEmail
+      }
+      this.addFriend(setData)
+        .then(res => {
+          alert(res)
+        })
+        .catch(err => {
+          alert(err)
+        })
     },
     editProfile() {
       const userId = this.user.user_id
@@ -411,9 +367,6 @@ export default {
         .then(res => {
           this.getUserById(userId)
           alert(res)
-          setTimeout(() => {
-            this.$router.push('/mixins')
-          }, 2000)
         })
         .catch(err => {
           alert(err)
@@ -421,10 +374,21 @@ export default {
     },
     getUser() {
       this.getUserById(this.user.user_id)
+    },
+    logoff() {
+      this.logout()
+    },
+    myFriends() {
+      this.getAllFriends(this.user.user_id)
     }
   },
   computed: {
-    ...mapGetters({ user: 'userData', profile: 'user', msg: 'msg' })
+    ...mapGetters({
+      user: 'userData',
+      profile: 'user',
+      msg: 'msg',
+      friends: 'myFriends'
+    })
   }
 }
 </script>
@@ -458,11 +422,12 @@ export default {
 }
 
 .flex {
-  display: flex;
+  display: grid;
+  grid-template-columns: 67px 150px 40px;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
+  word-wrap: break-word;
 }
-
 .notif {
   border-radius: 50px;
   font-size: 11px;
@@ -474,7 +439,6 @@ export default {
   width: 64px;
   height: 64px;
   border-radius: 20px;
-  background-color: aqua;
 }
 
 .center {

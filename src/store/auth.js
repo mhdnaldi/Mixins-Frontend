@@ -21,7 +21,6 @@ export default {
         axios
           .post('http://localhost:3000/users/login', payload)
           .then(res => {
-            // console.log(res.data)
             context.commit('getUserData', res.data.data)
             localStorage.setItem('token', res.data.data.token)
             resolve(res.data)
