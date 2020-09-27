@@ -260,12 +260,44 @@
                       {{ value.user_name }}
                     </h6>
                     <p style="text-align: left; margin-top: px">
-                      {{ value.user_phone }}
+                      {{ value.user_email }}
                     </p>
                   </div>
                   <div class="mt-1">
                     <img
                       @click="createRoom(value.friends_id)"
+                      class="pt-3"
+                      src="../assets/img/Plus.png"
+                      alt=""
+                    />
+                  </div></div
+              ></b-col>
+            </b-row>
+          </section>
+          <section v-if="showAllRoom">
+            <!-- ROOM -->
+            <b-row class="mt-2" v-for="(value, index) in allRooms" :key="index">
+              <b-col
+                ><div class="flex">
+                  <div class="profiles">
+                    <img
+                      class="profiles"
+                      :src="port + value.user_image"
+                      alt=""
+                    />
+                  </div>
+                  <div class="mt-1">
+                    <div></div>
+                    <h6 style="text-align: left; font-size: 18px; ">
+                      {{ value.user_name }}
+                    </h6>
+                    <p style="text-align: left; margin-top: px">
+                      {{ value.user_phone }}
+                    </p>
+                  </div>
+                  <div class="mt-1">
+                    <img
+                      @click="showRoomChat(value.room_id)"
                       class="pt-3"
                       src="../assets/img/Plus.png"
                       alt=""
@@ -292,8 +324,8 @@
                 {{ roomChat[0].user_name }}
               </h5>
             </div>
-            <div v-b-modal.modal-sm.modal-3>
-              <!-- <b-modal id="modal-3" title="Profile" hide-footer>
+            <div v-b-modal.modal-sm.modal-3 v-if="roomChat[0]">
+              <b-modal id="modal-3" title="Profile" hide-footer>
                 <div>
                   <b-row align-content="center">
                     <b-col cols lg="12"
@@ -335,7 +367,7 @@
                     >
                   </b-row>
                 </div>
-              </b-modal> -->
+              </b-modal>
               <img src="../assets/img/Profile menu.png" alt="" />
             </div>
           </div>
@@ -425,7 +457,9 @@ export default {
       'searchFriends',
       'postRoom',
       'getUserRoom',
-      'sendMessages'
+      'sendMessages',
+      'getAllRoom',
+      'getMessage'
     ]),
     ...mapMutations(['setSearch', 'setUserRoom']),
     handleFile(event) {
@@ -470,9 +504,12 @@ export default {
     myFriends() {
       this.getAllFriends(this.user.user_id)
       this.showAllFriends = true
+      this.showAllRoom = false
     },
     allRoom() {
       this.showAllFriends = false
+      this.showAllRoom = true
+      this.getAllRoom(this.user.user_id)
     },
     search() {
       const setData = {
@@ -488,7 +525,8 @@ export default {
         user_id: this.user.user_id,
         friends_id: data
       }
-      this.postRoom(setData) / this.friendsId = data
+      this.postRoom(setData)
+      this.friendsId = data
       const roomData = {
         friends_id: data,
         user_id: this.user.user_id
@@ -505,6 +543,9 @@ export default {
         text_message: this.text
       }
       this.sendMessages(setData)
+    },
+    showRoomChat(data) {
+      this.getMessage(data)
     }
   },
 
@@ -515,7 +556,8 @@ export default {
       msg: 'msg',
       friends: 'myFriends',
       roomData: 'room',
-      roomChat: 'roomChat'
+      roomChat: 'roomChat',
+      allRooms: 'allRoom'
     })
   }
 }

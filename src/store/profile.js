@@ -10,7 +10,8 @@ export default {
     setUserRoom: {},
     // ---- USER ROOM
     roomChat: [],
-    message: []
+    message: [],
+    allRoom: []
   },
   mutations: {
     setUser(state, payload) {
@@ -36,6 +37,12 @@ export default {
     },
     setMessage(state, payload) {
       state.message = payload
+    },
+    setAllRoom(state, payload) {
+      state.allRoom = payload
+    },
+    setRoomMessages(payload) {
+      console.log(payload)
     }
   },
   actions: {
@@ -134,6 +141,19 @@ export default {
           })
       })
     },
+    getAllRoom(context, payload) {
+      return new Promise((resolve, reject) => [
+        axios
+          .get(`http://localhost:3000/chat/get-room/${payload}`)
+          .then(res => {
+            context.commit('setAllRoom', res.data.data)
+            resolve.res
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      ])
+    },
     sendMessages(context, payload) {
       return new Promise((resolve, reject) => {
         axios
@@ -145,6 +165,20 @@ export default {
           })
           .catch(err => {
             console.log(err)
+            reject(err.response.data.msg)
+          })
+      })
+    },
+    getMessage(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(`http://localhost:3000/chat/room-id/${payload}`)
+          .then(res => {
+            resolve(res)
+            console.log(res)
+            context.commit('setRoomMessages', res)
+          })
+          .catch(err => {
             reject(err.response.data.msg)
           })
       })
@@ -166,6 +200,9 @@ export default {
     // ROOM CHAT
     roomChat(state) {
       return state.roomChat
+    },
+    allRoom(state) {
+      return state.allRoom
     }
   }
 }
