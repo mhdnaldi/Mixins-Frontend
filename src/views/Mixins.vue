@@ -235,47 +235,107 @@
             ><div>
               <b-button class="btn btn-primary button" @click="myFriends"
                 >All</b-button
-              ><b-button class="btn btn-primary button">Important</b-button
+              ><b-button class="btn btn-primary button" @click="allRoom"
+                >Important</b-button
               ><b-button class="btn btn-primary button">Unread</b-button>
             </div></b-col
           >
         </b-row>
         <div class="mt-4 scrollbar" style="height: 320px; overflow-x:hidden">
-          <!-- PREEEN -->
-          <b-row class="mt-2" v-for="(value, index) in friends" :key="index">
-            <b-col
-              ><div class="flex">
-                <div class="profiles">
-                  <img class="profiles" :src="port + value.user_image" alt="" />
-                </div>
-                <div class="mt-1">
-                  <div></div>
-                  <h6 style="text-align: left; font-size: 18px; ">
-                    {{ value.user_name }}
-                  </h6>
-                  <p style="text-align: left; margin-top: px">
-                    {{ value.user_phone }}
-                  </p>
-                </div>
-                <div class="mt-1">
-                  <p>15:20</p>
-                  <div class="notif"><p>1</p></div>
-                </div>
-              </div></b-col
-            >
-          </b-row>
+          <section v-if="showAllFriends">
+            <!-- PREEEN -->
+            <b-row class="mt-2" v-for="(value, index) in friends" :key="index">
+              <b-col
+                ><div class="flex">
+                  <div class="profiles">
+                    <img
+                      class="profiles"
+                      :src="port + value.user_image"
+                      alt=""
+                    />
+                  </div>
+                  <div class="mt-1">
+                    <div></div>
+                    <h6 style="text-align: left; font-size: 18px; ">
+                      {{ value.user_name }}
+                    </h6>
+                    <p style="text-align: left; margin-top: px">
+                      {{ value.user_phone }}
+                    </p>
+                  </div>
+                  <div class="mt-1">
+                    <img
+                      @click="createRoom(value.friends_id)"
+                      class="pt-3"
+                      src="../assets/img/Plus.png"
+                      alt=""
+                    />
+                  </div></div
+              ></b-col>
+            </b-row>
+          </section>
         </div>
       </b-col>
-      <b-col cols lg="9">
+      <Empty v-show="showEmpty" />
+      <b-col v-show="showChat" cols lg="9" style="position: relative">
         <b-row>
           <div class="flexx" style="width:100%; ">
-            <div class="flexx">
-              <div class="img-profile-chat" style="display:inline-block;"></div>
+            <div class="flexx" v-if="roomChat[0]">
+              <div class="img-profile-chat" style="display:inline-block;">
+                <img
+                  class="img-profile-chat"
+                  :src="port + roomChat[0].user_image"
+                  alt=""
+                />
+              </div>
               <h5 style="display:inline-block; margin-left: 20px">
-                Muhammad Naldi
+                {{ roomChat[0].user_name }}
               </h5>
             </div>
-            <div>
+            <div v-b-modal.modal-sm.modal-3>
+              <!-- <b-modal id="modal-3" title="Profile" hide-footer>
+                <div>
+                  <b-row align-content="center">
+                    <b-col cols lg="12"
+                      ><div class="img-profile center">
+                        <img
+                          class="img-profile center"
+                          :src="port + roomChat[0].user_image"
+                          alt=""
+                        /></div
+                    ></b-col>
+                  </b-row>
+                  <b-row align-content="center" class="mt-3">
+                    <b-col cols lg="12"
+                      ><div class="center">
+                        <h6
+                          style="font-size: 20px; font-weight:500; text-align: center"
+                        >
+                          {{ roomChat[0].user_name }}
+                        </h6>
+                      </div></b-col
+                    >
+                  </b-row>
+                  <b-row align-content="center">
+                    <b-col cols lg="12"
+                      ><div class="center">
+                        <p style="text-align: center">
+                          {{ roomChat[0].user_email }}
+                        </p>
+                      </div></b-col
+                    >
+                  </b-row>
+                  <b-row align-content="center">
+                    <b-col cols lg="12"
+                      ><div class="center">
+                        <p style="text-align: center">
+                          {{ roomChat[0].user_phone }}
+                        </p>
+                      </div></b-col
+                    >
+                  </b-row>
+                </div>
+              </b-modal> -->
               <img src="../assets/img/Profile menu.png" alt="" />
             </div>
           </div>
@@ -306,6 +366,19 @@
             </div>
           </div>
         </b-row>
+        <b-row style="position: absolute; bottom:30px; right:20px; left: 20px">
+          <b-col lg="10" width>
+            <b-form-input
+              v-model="text"
+              placeholder="Enter Message"
+            ></b-form-input>
+          </b-col>
+          <b-col lg="2" class="">
+            <b-button @click="sendMessage" style="width: 100%" variant="success"
+              >SEND</b-button
+            >
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
   </b-container>
@@ -313,11 +386,11 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-// import Empty from '../components/EmptyChat'
+import Empty from '../components/EmptyChat'
 export default {
   name: 'Mixins',
   components: {
-    // Empty
+    Empty
   },
   created() {
     this.getUser()
@@ -332,7 +405,14 @@ export default {
       },
       port: 'http://localhost:3000/',
       friendsEmail: '',
-      searchName: ''
+      searchName: '',
+      roomId: '',
+      showEmpty: true,
+      showChat: false,
+      text: '',
+      friendsId: '',
+      showAllFriends: false,
+      showAllRoom: false
     }
   },
   methods: {
@@ -342,9 +422,12 @@ export default {
       'addFriend',
       'logout',
       'getAllFriends',
-      'searchFriends'
+      'searchFriends',
+      'postRoom',
+      'getUserRoom',
+      'sendMessages'
     ]),
-    ...mapMutations(['setSearch']),
+    ...mapMutations(['setSearch', 'setUserRoom']),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
     },
@@ -386,6 +469,10 @@ export default {
     },
     myFriends() {
       this.getAllFriends(this.user.user_id)
+      this.showAllFriends = true
+    },
+    allRoom() {
+      this.showAllFriends = false
     },
     search() {
       const setData = {
@@ -394,14 +481,41 @@ export default {
       }
       this.setSearch(setData)
       this.searchFriends()
+    },
+    // ---- ROOM CHAT ---------------------
+    createRoom(data) {
+      const setData = {
+        user_id: this.user.user_id,
+        friends_id: data
+      }
+      this.postRoom(setData) / this.friendsId = data
+      const roomData = {
+        friends_id: data,
+        user_id: this.user.user_id
+      }
+      this.getUserRoom(roomData)
+      this.showEmpty = false
+      this.showChat = true
+    },
+    sendMessage() {
+      const setData = {
+        user_id: this.user.user_id,
+        friends_id: this.friendsId,
+        room_id: this.roomData.room_id,
+        text_message: this.text
+      }
+      this.sendMessages(setData)
     }
   },
+
   computed: {
     ...mapGetters({
       user: 'userData',
       profile: 'user',
       msg: 'msg',
-      friends: 'myFriends'
+      friends: 'myFriends',
+      roomData: 'room',
+      roomChat: 'roomChat'
     })
   }
 }
@@ -517,7 +631,6 @@ export default {
   width: 62px;
   height: 62px;
   border-radius: 20px;
-  background-color: red;
 }
 
 .img-profile-sender {

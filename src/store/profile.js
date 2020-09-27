@@ -5,7 +5,12 @@ export default {
     search: {},
     user: [],
     msg: '',
-    myFriends: []
+    myFriends: [],
+    room: [],
+    setUserRoom: {},
+    // ---- USER ROOM
+    roomChat: [],
+    message: []
   },
   mutations: {
     setUser(state, payload) {
@@ -17,7 +22,20 @@ export default {
     },
     setSearch(state, payload) {
       state.search = payload
-      // console.log(state.search)
+    },
+    setRoom(state, payload) {
+      state.room = payload[0]
+    },
+    // USER-ROOM
+    setUserRoom(state, payload) {
+      state.setUserRoom = payload
+    },
+    setRoomChat(state, payload) {
+      state.roomChat = payload
+      // console.log(payload)
+    },
+    setMessage(state, payload) {
+      state.message = payload
     }
   },
   actions: {
@@ -71,8 +89,7 @@ export default {
           })
       })
     },
-    searchFriends(context, payload) {
-      console.log(payload)
+    searchFriends(context) {
       return new Promise((resolve, reject) => {
         axios
           .get(
@@ -83,6 +100,51 @@ export default {
             resolve(res.data.msg)
           })
           .catch(err => {
+            reject(err.response.data.msg)
+          })
+      })
+    },
+    postRoom(context, payload) {
+      return new Promise((resolve, reject) => [
+        axios
+          .post('http://localhost:3000/chat/create-room', payload)
+          .then(res => {
+            console.log(res.data)
+            context.commit('setRoom', res.data.data)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      ])
+    },
+    getUserRoom(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(
+            `http://localhost:3000/chat/user-room?friends_id=${payload.friends_id}&user_id=${payload.user_id}`
+          )
+          .then(res => {
+            context.commit('setRoomChat', res.data.data)
+            resolve(res)
+          })
+          .catch(err => {
+            console.log(err.response.data.msg)
+            reject(err.response.data.msg)
+          })
+      })
+    },
+    sendMessages(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .post('http://localhost:3000/chat/send-message', payload)
+          .then(res => {
+            context.commit('setMessage', res.data)
+            console.log(res)
+            resolve(res)
+          })
+          .catch(err => {
+            console.log(err)
             reject(err.response.data.msg)
           })
       })
@@ -97,6 +159,13 @@ export default {
     },
     myFriends(state) {
       return state.myFriends
+    },
+    room(state) {
+      return state.room
+    },
+    // ROOM CHAT
+    roomChat(state) {
+      return state.roomChat
     }
   }
 }

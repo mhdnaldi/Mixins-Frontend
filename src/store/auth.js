@@ -1,5 +1,5 @@
 import axios from 'axios'
-import router from './index'
+import router from '../router/index'
 
 export default {
   state: {
@@ -9,6 +9,7 @@ export default {
   mutations: {
     getUserData(state, payload) {
       state.userData = payload
+      state.token = payload.token
     },
     delUser(state) {
       state.userData = {}
