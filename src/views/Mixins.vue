@@ -312,7 +312,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 // import Empty from '../components/EmptyChat'
 export default {
   name: 'Mixins',
@@ -344,6 +344,7 @@ export default {
       'getAllFriends',
       'searchFriends'
     ]),
+    ...mapMutations(['setSearch']),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
     },
@@ -388,11 +389,11 @@ export default {
     },
     search() {
       const setData = {
-        user_id: this.user.user_id,
-        user_name: this.searchName
+        id: this.user.user_id,
+        search: this.searchName
       }
-      // console.log(setData)
-      this.searchFriends(setData)
+      this.setSearch(setData)
+      this.searchFriends()
     }
   },
   computed: {

@@ -2,6 +2,7 @@ import axios from 'axios'
 
 export default {
   state: {
+    search: {},
     user: [],
     msg: '',
     myFriends: []
@@ -12,8 +13,11 @@ export default {
       state.msg = payload.msg
     },
     setFriends(state, payload) {
-      console.log(payload)
       state.myFriends = payload
+    },
+    setSearch(state, payload) {
+      state.search = payload
+      // console.log(state.search)
     }
   },
   actions: {
@@ -68,14 +72,14 @@ export default {
       })
     },
     searchFriends(context, payload) {
+      console.log(payload)
       return new Promise((resolve, reject) => {
         axios
           .get(
-            `http://localhost:3000/chat/search-friends/${payload.user_id}`,
-            payload.user_name
+            `http://localhost:3000/chat/search-friends?id=${context.state.search.id}&search=${context.state.search.search}`
           )
           .then(res => {
-            console.log(res)
+            context.commit('setFriends', res.data.data)
             resolve(res.data.msg)
           })
           .catch(err => {
