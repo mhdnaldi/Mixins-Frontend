@@ -65,6 +65,26 @@
                       </b-row>
                     </div>
                     <div>
+                      <GmapMap
+                        :center="{ lat: coordinates.lat, lng: coordinates.lng }"
+                        :zoom="10"
+                        map-type-id="terrain"
+                        style="width: 80%; height: 300px; margin:10px auto"
+                      >
+                        <GmapMarker
+                          :position="{
+                            lat: coordinates.lat,
+                            lng: coordinates.lng
+                          }"
+                          :clickable="true"
+                          :draggable="true"
+                          @click="clickMarker"
+                          icon="https://img.icons8.com/color/48/000000/map-pin.png
+"
+                        />
+                      </GmapMap>
+                    </div>
+                    <div>
                       <b-form>
                         <b-form-group id="input-group-1">
                           <b-form-input
@@ -202,18 +222,8 @@
         </b-row>
         <b-container>
           <b-row align-content="center" class="mt-4">
-            <b-col cols lg="2">
-              <div class="center">
-                <img
-                  @click="search"
-                  class="search"
-                  src="../assets/img/Search.png"
-                  alt=""
-                />
-              </div>
-            </b-col>
-            <b-col cols lg="8">
-              <div class="center">
+            <b-col cols lg="12">
+              <div style="display: flex; justify-content: space-around">
                 <b-form>
                   <b-form-input
                     class="form"
@@ -222,27 +232,32 @@
                     v-model="searchName"
                     placeholder="Search name ..."
                   ></b-form-input>
-                </b-form></div
-            ></b-col>
-            <b-col cols lg="2"
-              ><div class="center">
-                <img class="plus" src="../assets/img/Plus.png" alt="" /></div
+                </b-form>
+                <img
+                  @click="search"
+                  style="width: 20px; height:20px"
+                  src="../assets/img/Search.png"
+                  alt=""
+                /></div
             ></b-col>
           </b-row>
         </b-container>
         <b-row class="mt-4">
           <b-col
-            ><div>
+            ><div style="display:flex; justify-content: space-around">
               <b-button class="btn btn-primary button" @click="myFriends"
-                >All</b-button
+                >Friends</b-button
               ><b-button class="btn btn-primary button" @click="allRoom"
-                >Important</b-button
-              ><b-button class="btn btn-primary button">Unread</b-button>
+                >Chats</b-button
+              >
             </div></b-col
           >
         </b-row>
         <div class="mt-4 scrollbar" style="height: 320px; overflow-x:hidden">
-          <section v-if="showAllFriends">
+          <section
+            v-if="showAllFriends"
+            style="height: 320px; overflow-x:hidden"
+          >
             <!-- PREEEN -->
             <b-row class="mt-2" v-for="(value, index) in friends" :key="index">
               <b-col
@@ -274,7 +289,7 @@
               ></b-col>
             </b-row>
           </section>
-          <section v-if="showAllRoom">
+          <section v-if="showAllRoom" style="height: 320px; overflow-x:hidden">
             <!-- ROOM -->
             <b-row class="mt-2" v-for="(value, index) in allRooms" :key="index">
               <b-col
@@ -297,9 +312,9 @@
                   </div>
                   <div class="mt-1">
                     <img
-                      @click="showRoomChat(value.room_id, value.user_id)"
+                      @click="showRoomChat(value)"
                       class="pt-3"
-                      src="../assets/img/Plus.png"
+                      src="../assets/img/chat.png"
                       alt=""
                     />
                   </div></div
@@ -415,6 +430,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Empty from '../components/EmptyChat'
+import io from 'socket.io-client'
 // import axios from 'axios'
 export default {
   name: 'Mixins',
@@ -423,9 +439,29 @@ export default {
   },
   created() {
     this.getUser()
+    this.$getLocation()
+      .then(coordinates => {
+        this.coordinates = {
+          lat: coordinates.lat,
+          lng: coordinates.lng
+        }
+      })
+      .catch(err => {
+        alert(err)
+      })
+  },
+  mounted() {
+    this.socket.on('chatMixins', data => {
+      this.socketMsg(data)
+    })
   },
   data() {
     return {
+      coordinates: {
+        lat: 0,
+        lng: 0
+      },
+      socket: io('http://localhost:3000'),
       form: {
         user_name: '',
         user_password: '',
@@ -441,10 +477,17 @@ export default {
       text: '',
       friendsId: '',
       showAllFriends: false,
-      showAllRoom: false
+      showAllRoom: false,
+      dataImg: ''
     }
   },
   methods: {
+    clickMarker(position) {
+      this.coordinates = {
+        lat: position.LatLng.lat(),
+        lng: position.LatLng.lng()
+      }
+    },
     ...mapActions([
       'editUser',
       'getUserById',
@@ -458,7 +501,7 @@ export default {
       'getAllRoom',
       'getMessage'
     ]),
-    ...mapMutations(['setSearch', 'setUserRoom']),
+    ...mapMutations(['setSearch', 'setUserRoom', 'socketMsg']),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
     },
@@ -531,34 +574,37 @@ export default {
         user_id: this.user.user_id
       }
       this.getUserRoom(roomData)
-      this.showEmpty = false
-      this.showChat = true
     },
     sendMessage() {
       const setData = {
         user_id: this.user.user_id,
         friends_id: this.friendsId,
-        room_id: this.roomData.room_id,
-        text_message: this.text
+        room_id: this.roomId,
+        text_message: this.text,
+        receiver: {
+          user_image: this.profile[0].user_image
+        }
       }
-      console.log(setData)
-
       this.sendMessages(setData)
       // SOCKET IO SENDMSG
+      this.socket.emit('mixinsMsg', setData)
+      this.text = ''
     },
     // ALL ROOM CHAT -------------------
-    showRoomChat(room, id) {
-      this.getMessage(room)
-
+    showRoomChat(value) {
+      console.log(value)
+      this.roomId = value.room_id
+      this.friendsId = value.friends_id
+      this.getMessage(value.room_id)
       const roomData = {
-        friends_id: id,
+        friends_id: this.friendsId,
         user_id: this.user.user_id
       }
-      this.getUserRoom(roomData)
 
+      this.getUserRoom(roomData)
       this.showEmpty = false
       this.showChat = true
-      // console.log(this.roomMessages[0].receiver)
+      this.socket.emit('setRoom', this.roomId)
     }
   },
 

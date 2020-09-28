@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import io from 'socket.io-client'
 export default {
   state: {
     search: {},
@@ -12,7 +12,8 @@ export default {
     roomChat: [],
     message: [],
     allRoom: [],
-    allRoomMsg: []
+    allRoomMsg: [],
+    socket: io('http://localhost:3000')
   },
   mutations: {
     setUser(state, payload) {
@@ -34,7 +35,6 @@ export default {
     },
     setRoomChat(state, payload) {
       state.roomChat = payload
-      // console.log(payload)
     },
     setMessage(state, payload) {
       state.message = payload
@@ -44,8 +44,12 @@ export default {
     },
     setRoomMessages(state, payload) {
       state.allRoomMsg = payload[0].messages
-    }
+    },
     // SOCKET
+    socketMsg(state, payload) {
+      state.allRoomMsg.push(payload)
+      console.log(state.allRoomMsg)
+    }
   },
   actions: {
     getAllFriends(context, payload) {
@@ -57,7 +61,6 @@ export default {
             resolve(response)
           })
           .catch(error => {
-            console.log(error)
             reject(error)
           })
       })
@@ -119,7 +122,6 @@ export default {
         axios
           .post('http://localhost:3000/chat/create-room', payload)
           .then(res => {
-            console.log(res.data)
             context.commit('setRoom', res.data.data)
             resolve(res)
           })
@@ -161,7 +163,7 @@ export default {
         axios
           .post('http://localhost:3000/chat/send-message', payload)
           .then(res => {
-            context.commit('setMessage', res.data)
+            // context.commit('setMessage', res.data)
             resolve(res)
           })
           .catch(err => {
@@ -205,7 +207,7 @@ export default {
       return state.allRoom
     },
     allRoomMsg(state) {
-      // console.log(state.allRoomMsg)
+      console.log(state.allRoomMsg)
       return state.allRoomMsg
     }
   }
