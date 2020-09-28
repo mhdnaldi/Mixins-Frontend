@@ -25,7 +25,12 @@
               </p>
             </div>
           </div>
-          <input class="message" type="text" v-model="message" placeholder="Message" />
+          <input
+            class="message"
+            type="text"
+            v-model="message"
+            placeholder="Message"
+          />
           <button class="send" @click="sendMessages">Send</button>
         </div>
       </b-col>
@@ -60,6 +65,8 @@ export default {
     }
   },
   mounted() {
+    // SOCKET. ON = MENERIMA DATA || SOCKET. EMIT = MENGIRIM DATA
+
     if (!this.$route.params.username) {
       this.$router.push('/about')
     }
@@ -69,7 +76,6 @@ export default {
     this.room = this.$route.params.room
     // --------------------------
 
-    // ----------------------------------------
     // CHAT ROOM
     this.socket.on('chatMessage', data => {
       this.messages.push(data)

@@ -297,7 +297,7 @@
                   </div>
                   <div class="mt-1">
                     <img
-                      @click="showRoomChat(value.room_id)"
+                      @click="showRoomChat(value.room_id, value.user_id)"
                       class="pt-3"
                       src="../assets/img/Plus.png"
                       alt=""
@@ -372,32 +372,28 @@
             </div>
           </div>
         </b-row>
-        <b-row>
-          <div class="flexx">
-            <div
-              class="img-profile-sender mr-3"
-              style="display:inline-block;"
-            ></div>
-            <div class="sender ">
-              <p style="padding: 3px 12px 0 12px; margin-bottom: 5px ">
-                Halooooo
-              </p>
+        <div style="height: 550px; overflow-x: hidden">
+          <b-row v-for="(value, index) in roomMessages" :key="index">
+            <div class="flexx">
+              <div
+                class="img-profile-sender mr-3"
+                style="display:inline-block;"
+              >
+                <img
+                  class="img-profile-sender mr-3"
+                  :src="port + value.receiver.user_image"
+                  alt=""
+                />
+              </div>
+
+              <div class="sender">
+                <p style="padding: 3px 12px 0 12px; margin-bottom: 5px">
+                  {{ value.text_message }}
+                </p>
+              </div>
             </div>
-          </div>
-        </b-row>
-        <b-row>
-          <div class="flexx">
-            <div
-              class="img-profile-sender mr-3"
-              style="display:inline-block;"
-            ></div>
-            <div class="sender ">
-              <p style="padding: 3px 12px 0 12px; margin-bottom: 5px ">
-                Woyyy
-              </p>
-            </div>
-          </div>
-        </b-row>
+          </b-row>
+        </div>
         <b-row style="position: absolute; bottom:30px; right:20px; left: 20px">
           <b-col lg="10" width>
             <b-form-input
@@ -419,6 +415,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Empty from '../components/EmptyChat'
+// import axios from 'axios'
 export default {
   name: 'Mixins',
   components: {
@@ -503,12 +500,14 @@ export default {
     },
     myFriends() {
       this.getAllFriends(this.user.user_id)
+
       this.showAllFriends = true
       this.showAllRoom = false
     },
     allRoom() {
       this.showAllFriends = false
       this.showAllRoom = true
+
       this.getAllRoom(this.user.user_id)
     },
     search() {
@@ -519,7 +518,7 @@ export default {
       this.setSearch(setData)
       this.searchFriends()
     },
-    // ---- ROOM CHAT ---------------------
+    // ---- FRIEND CREATE ROOM ---------------------
     createRoom(data) {
       const setData = {
         user_id: this.user.user_id,
@@ -542,10 +541,24 @@ export default {
         room_id: this.roomData.room_id,
         text_message: this.text
       }
+      console.log(setData)
+
       this.sendMessages(setData)
+      // SOCKET IO SENDMSG
     },
-    showRoomChat(data) {
-      this.getMessage(data)
+    // ALL ROOM CHAT -------------------
+    showRoomChat(room, id) {
+      this.getMessage(room)
+
+      const roomData = {
+        friends_id: id,
+        user_id: this.user.user_id
+      }
+      this.getUserRoom(roomData)
+
+      this.showEmpty = false
+      this.showChat = true
+      // console.log(this.roomMessages[0].receiver)
     }
   },
 
@@ -557,7 +570,8 @@ export default {
       friends: 'myFriends',
       roomData: 'room',
       roomChat: 'roomChat',
-      allRooms: 'allRoom'
+      allRooms: 'allRoom',
+      roomMessages: 'allRoomMsg'
     })
   }
 }
@@ -679,6 +693,6 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background-color: red;
+  /* background-color: aqua; */
 }
 </style>

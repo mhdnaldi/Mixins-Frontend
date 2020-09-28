@@ -11,7 +11,8 @@ export default {
     // ---- USER ROOM
     roomChat: [],
     message: [],
-    allRoom: []
+    allRoom: [],
+    allRoomMsg: []
   },
   mutations: {
     setUser(state, payload) {
@@ -41,21 +42,23 @@ export default {
     setAllRoom(state, payload) {
       state.allRoom = payload
     },
-    setRoomMessages(payload) {
-      console.log(payload)
+    setRoomMessages(state, payload) {
+      state.allRoomMsg = payload[0].messages
     }
+    // SOCKET
   },
   actions: {
     getAllFriends(context, payload) {
       return new Promise((resolve, reject) => {
         axios
           .get(`http://localhost:3000/chat/get-friends/${payload}`)
-          .then(res => {
-            context.commit('setFriends', res.data.data)
-            resolve(res.data.msg)
+          .then(response => {
+            context.commit('setFriends', response.data.data)
+            resolve(response)
           })
-          .catch(err => {
-            reject(err.response)
+          .catch(error => {
+            console.log(error)
+            reject(error)
           })
       })
     },
@@ -131,13 +134,12 @@ export default {
           .get(
             `http://localhost:3000/chat/user-room?friends_id=${payload.friends_id}&user_id=${payload.user_id}`
           )
-          .then(res => {
-            context.commit('setRoomChat', res.data.data)
-            resolve(res)
+          .then(response => {
+            context.commit('setRoomChat', response.data.data)
+            resolve(response)
           })
-          .catch(err => {
-            console.log(err.response.data.msg)
-            reject(err.response.data.msg)
+          .catch(error => {
+            reject(error.response.data.msg)
           })
       })
     },
@@ -145,9 +147,9 @@ export default {
       return new Promise((resolve, reject) => [
         axios
           .get(`http://localhost:3000/chat/get-room/${payload}`)
-          .then(res => {
-            context.commit('setAllRoom', res.data.data)
-            resolve.res
+          .then(response => {
+            context.commit('setAllRoom', response.data.data)
+            resolve(response)
           })
           .catch(err => {
             reject(err.response.data.msg)
@@ -160,7 +162,6 @@ export default {
           .post('http://localhost:3000/chat/send-message', payload)
           .then(res => {
             context.commit('setMessage', res.data)
-            console.log(res)
             resolve(res)
           })
           .catch(err => {
@@ -175,8 +176,7 @@ export default {
           .get(`http://localhost:3000/chat/room-id/${payload}`)
           .then(res => {
             resolve(res)
-            console.log(res)
-            context.commit('setRoomMessages', res)
+            context.commit('setRoomMessages', res.data.data)
           })
           .catch(err => {
             reject(err.response.data.msg)
@@ -203,6 +203,10 @@ export default {
     },
     allRoom(state) {
       return state.allRoom
+    },
+    allRoomMsg(state) {
+      // console.log(state.allRoomMsg)
+      return state.allRoomMsg
     }
   }
 }
