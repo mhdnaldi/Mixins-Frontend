@@ -80,7 +80,6 @@ export default {
         axios
           .post('http://localhost:3000/users/register', payload)
           .then(res => {
-            context.commit('getUserData', res.data)
             resolve(res.data)
           })
           .catch(err => {

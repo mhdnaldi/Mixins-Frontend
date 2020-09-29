@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Mixins from '../views/Mixins.vue'
 import About from '../views/About.vue'
 import Chat from '../views/Chat.vue'
@@ -13,28 +13,17 @@ import store from '../store/index'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home,
-    meta: { requiresAuth: true }
-  },
+  // {
+  //   path: '/',
+  //   name: 'Home',
+  //   component: Home,
+  //   meta: { requiresAuth: true }
+  // },
   {
     path: '/mixins',
     name: 'Mixins',
     component: Mixins,
     meta: { requiresAuth: true }
-  },
-  {
-    path: '/about',
-    name: 'About',
-    component: About,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/chat',
-    name: 'Chat',
-    component: Chat
   },
   {
     path: '/login',
@@ -45,12 +34,24 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: Register
+    component: Register,
+    meta: { requiresVisitor: true }
   },
   {
     path: '/forgot-password',
     name: 'Forgot',
     component: Forgot
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: Chat
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+    meta: { requiresAuth: true }
   },
   {
     path: '/new-password',

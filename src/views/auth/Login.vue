@@ -129,7 +129,6 @@ export default {
         .catch(err => {
           this.alertErr = true
           this.msg = err
-          console.log(err)
           setTimeout(() => {
             this.alertErr = false
           }, 2000)

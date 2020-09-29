@@ -163,7 +163,7 @@ export default {
         axios
           .post('http://localhost:3000/chat/send-message', payload)
           .then(res => {
-            // context.commit('setMessage', res.data)
+            context.commit('setMessage', res.data)
             resolve(res)
           })
           .catch(err => {

@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col cols lg="3">
+      <b-col cols lg="3" style="box-shadow: 3px 3px 10px rgba(0,0,0,0.4);">
         <b-container>
           <b-row style="height: 85px" align-content="center">
             <b-col cols lg="10" class="title"><h5>Mixins</h5></b-col>
@@ -28,6 +28,13 @@
                         <b-col cols lg="12"
                           ><div class="img-profile center">
                             <img
+                              v-if="profile[0].user_image === null"
+                              class="img-profile center"
+                              src="../assets/img/default.png"
+                              alt
+                            />
+                            <img
+                              v-if="profile[0].user_image !== null"
                               class="img-profile center"
                               :src="port + profile[0].user_image"
                               alt=""
@@ -84,7 +91,19 @@
                         />
                       </GmapMap>
                     </div>
-                    <div>
+                    <div class="mt-2">
+                      <b-alert
+                        variant="success"
+                        class="mt-3"
+                        v-bind:show="alert"
+                        >{{ msgs }}</b-alert
+                      >
+                      <b-alert
+                        variant="danger"
+                        class="mt-3"
+                        v-bind:show="alertErr"
+                        >{{ msgs }}</b-alert
+                      >
                       <b-form>
                         <b-form-group id="input-group-1">
                           <b-form-input
@@ -160,6 +179,18 @@
                 >
                   <b-modal id="modal-2" title="Add Friends" hide-footer>
                     <b-form>
+                      <b-alert
+                        variant="success"
+                        class="mt-3"
+                        v-bind:show="alert"
+                        >{{ msgs }}</b-alert
+                      >
+                      <b-alert
+                        variant="danger"
+                        class="mt-3"
+                        v-bind:show="alertErr"
+                        >{{ msgs }}</b-alert
+                      >
                       <b-form-group id="input-group-1">
                         <b-form-input
                           id="input-1"
@@ -198,6 +229,13 @@
           <b-col cols lg="12"
             ><div class="img-profile center">
               <img
+                v-if="profile[0].user_image === null"
+                class="img-profile center"
+                src="../assets/img/default.png"
+                alt=""
+              />
+              <img
+                v-if="profile[0].user_image !== null"
                 class="img-profile center"
                 :src="port + profile[0].user_image"
                 alt=""
@@ -223,7 +261,9 @@
         <b-container>
           <b-row align-content="center" class="mt-4">
             <b-col cols lg="12">
-              <div style="display: flex; justify-content: space-around">
+              <div
+                style="display: flex; justify-content: space-around; align-items:center"
+              >
                 <b-form>
                   <b-form-input
                     class="form"
@@ -235,7 +275,7 @@
                 </b-form>
                 <img
                   @click="search"
-                  style="width: 20px; height:20px"
+                  style="width: 20px; height:20px;"
                   src="../assets/img/Search.png"
                   alt=""
                 /></div
@@ -253,6 +293,10 @@
             </div></b-col
           >
         </b-row>
+        <div
+          class="mt-2"
+          style="width: 95%; border: 1px solid darkgrey; margin: 0 auto"
+        ></div>
         <div class="mt-4 scrollbar" style="height: 320px; overflow-x:hidden">
           <section
             v-if="showAllFriends"
@@ -264,7 +308,14 @@
                 ><div class="flex">
                   <div class="profiles">
                     <img
-                      class="profiles"
+                      v-if="value.user_image === null"
+                      class="profiles center"
+                      src="../assets/img/default.png"
+                      alt
+                    />
+                    <img
+                      v-if="value.user_image !== null"
+                      class="profiles center"
                       :src="port + value.user_image"
                       alt=""
                     />
@@ -296,7 +347,14 @@
                 ><div class="flex">
                   <div class="profiles">
                     <img
-                      class="profiles"
+                      v-if="value.user_image === null"
+                      class="profiles center"
+                      src="../assets/img/default.png"
+                      alt
+                    />
+                    <img
+                      v-if="value.user_image !== null"
+                      class="profiles center"
                       :src="port + value.user_image"
                       alt=""
                     />
@@ -386,8 +444,11 @@
               <img src="../assets/img/Profile menu.png" alt="" />
             </div>
           </div>
+          <div
+            style="width: 95%; border: 1px solid darkgrey; margin: 0 auto"
+          ></div>
         </b-row>
-        <div style="height: 550px; overflow-x: hidden">
+        <div style="height: 550px; overflow-x: hidden;">
           <b-row v-for="(value, index) in roomMessages" :key="index">
             <div class="flexx">
               <div
@@ -417,7 +478,7 @@
             ></b-form-input>
           </b-col>
           <b-col lg="2" class="">
-            <b-button @click="sendMessage" style="width: 100%" variant="success"
+            <b-button @click="sendMessage" style="width: 100%" variant="primary"
               >SEND</b-button
             >
           </b-col>
@@ -457,6 +518,9 @@ export default {
   },
   data() {
     return {
+      alert: false,
+      alertErr: false,
+      msgs: '',
       coordinates: {
         lat: 0,
         lng: 0
@@ -512,10 +576,24 @@ export default {
       }
       this.addFriend(setData)
         .then(res => {
-          alert(res)
+          this.alert = true
+          this.msgs = res
+          setTimeout(() => {
+            this.alert = false
+          }, 2000)
         })
         .catch(err => {
-          alert(err)
+          this.$swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: err
+          })
+
+          // this.alertErr = true
+          // this.msgs = err
+          // setTimeout(() => {
+          //   this.alertErr = false
+          // }, 2000)
         })
     },
     editProfile() {
@@ -532,10 +610,18 @@ export default {
       this.editUser(setData)
         .then(res => {
           this.getUserById(userId)
-          alert(res)
+          this.alert = true
+          this.msgs = res
+          setTimeout(() => {
+            this.alert = false
+          }, 2000)
         })
         .catch(err => {
-          alert(err)
+          this.alertErr = true
+          this.msgs = err
+          setTimeout(() => {
+            this.alertErr = false
+          }, 2000)
         })
     },
     getUser() {
@@ -546,6 +632,8 @@ export default {
 
       this.showAllFriends = true
       this.showAllRoom = false
+      this.showEmpty = true
+      this.showChat = false
     },
     allRoom() {
       this.showAllFriends = false
@@ -657,7 +745,15 @@ export default {
   justify-content: center;
   gap: 10px;
   word-wrap: break-word;
+  padding-top: 10px;
+  transition: 0.3;
+  border-radius: 4px;
 }
+
+.flex:hover {
+  background-color: #c7c8ca;
+}
+
 .notif {
   border-radius: 50px;
   font-size: 11px;
