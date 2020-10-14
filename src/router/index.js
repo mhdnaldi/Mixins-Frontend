@@ -8,6 +8,7 @@ import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import Forgot from '../views/auth/Forgot.vue'
 import NewPassword from '../views/auth/NewPassword.vue'
+import Friend from '../views/FriendsList.vue'
 import store from '../store/index'
 
 Vue.use(VueRouter)
@@ -51,6 +52,12 @@ const routes = [
     path: '/about',
     name: 'About',
     component: About,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/friend-list',
+    name: 'Friend',
+    component: Friend,
     meta: { requiresAuth: true }
   },
   {

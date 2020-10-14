@@ -160,18 +160,20 @@
                     Settings
                   </p>
                 </div>
-                <div class="px-2 py-2" style="cursor: pointer">
-                  <img
-                    style="display: inline-block"
-                    src="../assets/img/Contacts.png"
-                    alt=""
-                  />
-                  <p
-                    style="display: inline-block; margin-left: 13px; color: #fff; font-size:16px"
-                  >
-                    Contacts
-                  </p>
-                </div>
+                <router-link to="/friend-list">
+                  <div class="px-2 py-2" style="cursor: pointer">
+                    <img
+                      style="display: inline-block"
+                      src="../assets/img/Contacts.png"
+                      alt=""
+                    />
+                    <p
+                      style="display: inline-block; margin-left: 13px; color: #fff; font-size:16px"
+                    >
+                      Contacts
+                    </p>
+                  </div>
+                </router-link>
                 <div
                   class="px-2 py-2"
                   v-b-modal.modal-2
@@ -388,6 +390,13 @@
             <div class="flexx" v-if="roomChat[0]">
               <div class="img-profile-chat" style="display:inline-block;">
                 <img
+                  v-if="roomChat[0].user_image === null"
+                  class="img-profile-chat"
+                  src="../assets/img/default.png"
+                  alt=""
+                />
+                <img
+                  v-if="roomChat[0].user_image !== null"
                   class="img-profile-chat"
                   :src="port + roomChat[0].user_image"
                   alt=""
@@ -404,6 +413,13 @@
                     <b-col cols lg="12"
                       ><div class="img-profile center">
                         <img
+                          v-if="roomChat[0].user_image === null"
+                          class="img-profile center"
+                          src="../assets/img/default.png"
+                          alt=""
+                        />
+                        <img
+                          v-if="roomChat[0].user_image !== null"
                           class="img-profile center"
                           :src="port + roomChat[0].user_image"
                           alt=""
@@ -456,6 +472,13 @@
                 style="display:inline-block;"
               >
                 <img
+                  v-if="value.receiver.user_image === null"
+                  class="img-profile-sender mr-3"
+                  src="../assets/img/default.png"
+                  alt=""
+                />
+                <img
+                  v-if="value.receiver.user_image !== null"
                   class="img-profile-sender mr-3"
                   :src="port + value.receiver.user_image"
                   alt=""
@@ -478,7 +501,10 @@
             ></b-form-input>
           </b-col>
           <b-col lg="2" class="">
-            <b-button @click="sendMessage" style="width: 100%" variant="primary"
+            <b-button
+              @click="sendMessage()"
+              style="width: 100%"
+              variant="primary"
               >SEND</b-button
             >
           </b-col>
@@ -576,24 +602,20 @@ export default {
       }
       this.addFriend(setData)
         .then(res => {
-          this.alert = true
-          this.msgs = res
-          setTimeout(() => {
-            this.alert = false
-          }, 2000)
+          this.friendsEmail = ''
+          this.$swal.fire({
+            icon: 'success',
+            title: 'Cool',
+            text: res
+          })
         })
         .catch(err => {
+          this.friendsEmail = ''
           this.$swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: err
           })
-
-          // this.alertErr = true
-          // this.msgs = err
-          // setTimeout(() => {
-          //   this.alertErr = false
-          // }, 2000)
         })
     },
     editProfile() {
@@ -638,7 +660,6 @@ export default {
     allRoom() {
       this.showAllFriends = false
       this.showAllRoom = true
-
       this.getAllRoom(this.user.user_id)
     },
     search() {
@@ -673,10 +694,12 @@ export default {
           user_image: this.profile[0].user_image
         }
       }
+
       this.sendMessages(setData)
-      // SOCKET IO SENDMSG
       this.socket.emit('mixinsMsg', setData)
       this.text = ''
+
+      // SOCKET IO SENDMSG
     },
     // ALL ROOM CHAT -------------------
     showRoomChat(value) {
