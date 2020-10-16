@@ -20,7 +20,7 @@ export default {
     loginUser(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:3000/users/login', payload)
+          .post(`${process.env.VUE_APP_URL}users/login`, payload)
           .then(res => {
             context.commit('getUserData', res.data.data)
             localStorage.setItem('token', res.data.data.token)
@@ -78,7 +78,7 @@ export default {
     registerUser(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:3000/users/register', payload)
+          .post(`${process.env.VUE_APP_URL}users/register`, payload)
           .then(res => {
             resolve(res.data)
           })
@@ -91,7 +91,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .post(
-            `http://localhost:3000/users/forgot-password?user_email=${payload}`
+            `${process.env.VUE_APP_URL}users/forgot-password?user_email=${payload}`
           )
           .then(res => {
             console.log(res.data)
@@ -105,7 +105,7 @@ export default {
     newPassword(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .patch('http://localhost:3000/users/change-password', payload)
+          .patch(`${process.env.VUE_APP_URL}users/change-password`, payload)
           .then(res => {
             console.log(res.data.data.msg)
             resolve(res.data)

@@ -1,19 +1,19 @@
 import axios from 'axios'
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 export default {
   state: {
     search: {},
     user: [],
     msg: '',
-    myFriends: [],
-    room: [],
-    setUserRoom: {},
-    // ---- USER ROOM
-    roomChat: [],
-    message: [],
-    allRoom: [],
-    allRoomMsg: [],
-    socket: io('http://localhost:3000')
+    myFriends: []
+    // room: [], //
+    // setUserRoom: {}, //
+    // // ---- USER ROOM
+    // roomChat: [], //
+    // message: [], //
+    // allRoom: [], //
+    // allRoomMsg: [], //
+    // socket: io('http://localhost:3000') //
   },
   mutations: {
     setUser(state, payload) {
@@ -25,37 +25,37 @@ export default {
     },
     setSearch(state, payload) {
       state.search = payload
-    },
-    setRoom(state, payload) {
-      state.room = payload[0]
-    },
-    // USER-ROOM
-    setUserRoom(state, payload) {
-      state.setUserRoom = payload
-    },
-    setRoomChat(state, payload) {
-      state.roomChat = payload
-    },
-    setMessage(state, payload) {
-      state.message = payload
-    },
-    setAllRoom(state, payload) {
-      state.allRoom = payload
-    },
-    setRoomMessages(state, payload) {
-      state.allRoomMsg = payload[0].messages
-    },
-    // SOCKET
-    socketMsg(state, payload) {
-      state.allRoomMsg.push(payload)
-      console.log(state.allRoomMsg)
     }
+    // setRoom(state, payload) {
+    //   state.room = payload[0]
+    // },
+    // USER-ROOM
+    // setUserRoom(state, payload) {
+    //   state.setUserRoom = payload
+    // },
+    // setRoomChat(state, payload) {
+    //   state.roomChat = payload
+    // },
+    // setMessage(state, payload) {
+    //   state.message = payload
+    // },
+    // setAllRoom(state, payload) {
+    //   state.allRoom = payload
+    // },
+    // setRoomMessages(state, payload) {
+    //   state.allRoomMsg = payload[0].messages
+    // },
+    // SOCKET
+    // socketMsg(state, payload) {
+    //   state.allRoomMsg.push(payload)
+    //   console.log(state.allRoomMsg)
+    // }
   },
   actions: {
     getAllFriends(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .get(`http://localhost:3000/chat/get-friends/${payload}`)
+          .get(`${process.env.VUE_APP_URL}chat/get-friends/${payload}`)
           .then(response => {
             context.commit('setFriends', response.data.data)
             resolve(response)
@@ -68,7 +68,7 @@ export default {
     getUserById(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .get(`http://localhost:3000/users/${payload}`)
+          .get(`${process.env.VUE_APP_URL}users/${payload}`)
           .then(res => {
             context.commit('setUser', res.data)
             resolve(res.data)
@@ -81,7 +81,10 @@ export default {
     editUser(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .patch(`http://localhost:3000/users/${payload.user_id}`, payload.form)
+          .patch(
+            `${process.env.VUE_APP_URL}users/${payload.user_id}`,
+            payload.form
+          )
           .then(res => {
             resolve(res.data.msg)
           })
@@ -93,7 +96,7 @@ export default {
     addFriend(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .post('http://localhost:3000/chat/add-friends', payload)
+          .post(`${process.env.VUE_APP_URL}chat/add-friends`, payload)
           .then(res => {
             resolve(res.data.msg)
           })
@@ -106,7 +109,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios
           .get(
-            `http://localhost:3000/chat/search-friends?id=${context.state.search.id}&search=${context.state.search.search}`
+            `${process.env.VUE_APP_URL}chat/search-friends?id=${context.state.search.id}&search=${context.state.search.search}`
           )
           .then(res => {
             context.commit('setFriends', res.data.data)
@@ -117,74 +120,90 @@ export default {
           })
       })
     },
-    postRoom(context, payload) {
-      return new Promise((resolve, reject) => [
-        axios
-          .post('http://localhost:3000/chat/create-room', payload)
-          .then(res => {
-            context.commit('setRoom', res.data.data)
-            resolve(res)
-          })
-          .catch(err => {
-            reject(err.response.data.msg)
-          })
-      ])
-    },
-    getUserRoom(context, payload) {
+    deleteFriend(context, payload) {
       return new Promise((resolve, reject) => {
         axios
-          .get(
-            `http://localhost:3000/chat/user-room?friends_id=${payload.friends_id}&user_id=${payload.user_id}`
+          .delete(
+            `${process.env.VUE_APP_URL}chat/delete-friends/${payload.id}?friends_id=${payload.friends_id}`
           )
-          .then(response => {
-            context.commit('setRoomChat', response.data.data)
-            resolve(response)
-          })
-          .catch(error => {
-            reject(error.response.data.msg)
-          })
-      })
-    },
-    getAllRoom(context, payload) {
-      return new Promise((resolve, reject) => [
-        axios
-          .get(`http://localhost:3000/chat/get-room/${payload}`)
-          .then(response => {
-            context.commit('setAllRoom', response.data.data)
-            resolve(response)
-          })
-          .catch(err => {
-            reject(err.response.data.msg)
-          })
-      ])
-    },
-    sendMessages(context, payload) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post('http://localhost:3000/chat/send-message', payload)
           .then(res => {
-            context.commit('setMessage', res.data)
-            resolve(res)
+            console.log(res.data)
+            resolve(res.data.msg)
           })
           .catch(err => {
-            console.log(err)
-            reject(err.response.data.msg)
-          })
-      })
-    },
-    getMessage(context, payload) {
-      return new Promise((resolve, reject) => {
-        axios
-          .get(`http://localhost:3000/chat/room-id/${payload}`)
-          .then(res => {
-            resolve(res)
-            context.commit('setRoomMessages', res.data.data)
-          })
-          .catch(err => {
+            console.log(err.response)
             reject(err.response.data.msg)
           })
       })
     }
+    // postRoom(context, payload) {
+    //   return new Promise((resolve, reject) => [
+    //     axios
+    //       .post('http://localhost:3000/chat/create-room', payload)
+    //       .then(res => {
+    //         context.commit('setRoom', res.data.data)
+    //         resolve(res)
+    //       })
+    //       .catch(err => {
+    //         reject(err.response.data.msg)
+    //       })
+    //   ])
+    // },
+    // getUserRoom(context, payload) {
+    //   return new Promise((resolve, reject) => {
+    //     axios
+    //       .get(
+    //         `http://localhost:3000/chat/user-room?friends_id=${payload.friends_id}&user_id=${payload.user_id}`
+    //       )
+    //       .then(response => {
+    //         context.commit('setRoomChat', response.data.data)
+    //         resolve(response)
+    //       })
+    //       .catch(error => {
+    //         reject(error.response.data.msg)
+    //       })
+    //   })
+    // },
+    // getAllRoom(context, payload) {
+    //   return new Promise((resolve, reject) => [
+    //     axios
+    //       .get(`http://localhost:3000/chat/get-room/${payload}`)
+    //       .then(response => {
+    //         context.commit('setAllRoom', response.data.data)
+    //         resolve(response)
+    //       })
+    //       .catch(err => {
+    //         reject(err.response.data.msg)
+    //       })
+    //   ])
+    // },
+    // sendMessages(context, payload) {
+    //   return new Promise((resolve, reject) => {
+    //     axios
+    //       .post('http://localhost:3000/chat/send-message', payload)
+    //       .then(res => {
+    //         context.commit('setMessage', res.data)
+    //         resolve(res)
+    //       })
+    //       .catch(err => {
+    //         console.log(err)
+    //         reject(err.response.data.msg)
+    //       })
+    //   })
+    // },
+    // getMessage(context, payload) {
+    //   return new Promise((resolve, reject) => {
+    //     axios
+    //       .get(`http://localhost:3000/chat/room-id/${payload}`)
+    //       .then(res => {
+    //         resolve(res)
+    //         context.commit('setRoomMessages', res.data.data)
+    //       })
+    //       .catch(err => {
+    //         reject(err.response.data.msg)
+    //       })
+    //   })
+    // }
   },
   getters: {
     user(state) {
@@ -195,20 +214,19 @@ export default {
     },
     myFriends(state) {
       return state.myFriends
-    },
-    room(state) {
-      return state.room
-    },
-    // ROOM CHAT
-    roomChat(state) {
-      return state.roomChat
-    },
-    allRoom(state) {
-      return state.allRoom
-    },
-    allRoomMsg(state) {
-      console.log(state.allRoomMsg)
-      return state.allRoomMsg
     }
+    // room(state) {
+    //   return state.room
+    // },
+    // // ROOM CHAT
+    // roomChat(state) {
+    //   return state.roomChat
+    // },
+    // allRoom(state) {
+    //   return state.allRoom
+    // },
+    // allRoomMsg(state) {
+    //   return state.allRoomMsg
+    // }
   }
 }

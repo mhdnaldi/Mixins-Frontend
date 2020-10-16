@@ -1,6 +1,6 @@
-<template >
+<template>
   <b-container fluid>
-    <div class="grid">
+    <div class="grid" v-if="myFriends">
       <div class="friend-list" v-for="(value, index) in myFriends" :key="index">
         <img
           v-if="value.user_image === null"
@@ -16,6 +16,10 @@
         />
         <p>Name: {{ value.user_name }}</p>
         <p>Email: {{ value.user_email }}</p>
+        <p>Phone: {{ value.user_phone }}</p>
+        <button class="bg-danger mb-1" @click="deleteFriends(value.user_id)">
+          DELETE
+        </button>
         <div>
           <GmapMap
             :center="{ lat: coordinates.lat, lng: coordinates.lng }"
@@ -41,15 +45,20 @@
 </template>
 
 <script>
+// import Empty from './EmptyFriends'
 import { mapActions, mapGetters } from 'vuex'
 export default {
+  components: {
+    // Empty
+  },
   data() {
     return {
-      port: 'http://localhost:3000/',
+      port: process.env.VUE_APP_URL,
       coordinates: {
         lat: 0,
         lng: 0
-      }
+      },
+      showEmpty: true
     }
   },
   created() {
@@ -66,7 +75,28 @@ export default {
     this.getAllFriends(this.userData.user_id)
   },
   methods: {
-    ...mapActions(['getAllFriends'])
+    ...mapActions(['getAllFriends', 'deleteFriend']),
+    deleteFriends(payload) {
+      const setData = {
+        id: this.userData.user_id,
+        friends_id: payload
+      }
+      this.$swal
+        .fire({
+          title: 'ARE YOU SURE ?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel'
+        })
+        .then(result => {
+          if (result.isConfirmed) {
+            this.$swal.fire('OK', '', 'success')
+            this.deleteFriend(setData)
+            this.getAllFriends(this.userData.user_id)
+          }
+        })
+    }
   },
   computed: {
     ...mapGetters(['myFriends', 'userData'])
@@ -85,7 +115,7 @@ export default {
 .friend-list {
   margin: auto;
   width: 300px;
-  height: 490px;
+  height: 550px;
   color: #111;
   background-color: #eee;
   border-radius: 10px;

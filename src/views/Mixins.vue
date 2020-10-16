@@ -551,14 +551,14 @@ export default {
         lat: 0,
         lng: 0
       },
-      socket: io('http://localhost:3000'),
+      socket: io('http://localhost:5000'),
       form: {
         user_name: '',
         user_password: '',
         user_phone: '',
         user_image: {}
       },
-      port: 'http://localhost:3000/',
+      port: process.env.VUE_APP_URL,
       friendsEmail: '',
       searchName: '',
       roomId: '',
