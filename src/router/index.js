@@ -5,7 +5,7 @@ import Mixins from '../views/Mixins.vue'
 import About from '../views/About.vue'
 import Chat from '../views/Chat.vue'
 import Login from '../views/auth/Login.vue'
-import Regis from '../views/auth/Register.vue'
+import Register from '../views/auth/Register.vue'
 import Forgot from '../views/auth/Forgot.vue'
 import NewPassword from '../views/auth/NewPassword.vue'
 import Friend from '../views/FriendsList.vue'
@@ -35,7 +35,7 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: Regis,
+    component: Register,
     meta: { requiresVisitor: true }
   },
   {

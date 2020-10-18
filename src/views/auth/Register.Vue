@@ -90,13 +90,6 @@
           <div class="lines"></div>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col cols="12">
-          <b-button class="btn-login" type="reset" @click="onReset"
-            >Reset</b-button
-          >
-        </b-col>
-      </b-row>
     </b-container>
   </div>
 </template>
@@ -138,14 +131,6 @@ export default {
             timer: 1500
           })
         })
-    },
-    onReset() {
-      this.form = {
-        user_name: '',
-        user_phone: '',
-        user_email: '',
-        user_password: ''
-      }
     }
   }
 }
@@ -154,9 +139,12 @@ export default {
 <style scoped>
 .login {
   width: 500px;
-  height: 710px;
+  padding: 20px;
+  height: 780px;
   background-color: #fff;
-  margin: 150px auto;
+  border: 1px solid #7e98df;
+  border-radius: 20px;
+  margin: 20px auto;
 }
 
 .title {
@@ -169,7 +157,7 @@ export default {
   border-top: 0px;
   border-left: 0px;
   border-right: 0px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #848484;
   border-radius: 0px;
 }
 

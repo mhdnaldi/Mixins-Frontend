@@ -7,13 +7,6 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="12">
-          <p class="text-left mt-4" style="color: #232323; font-size: 14px">
-            Hi!, Welcome Back!
-          </p>
-        </b-col>
-      </b-row>
-      <b-row>
         <b-col cols="12" class="mt-4">
           <b-form>
             <b-form-group
@@ -142,9 +135,12 @@ export default {
 <style scoped>
 .login {
   width: 500px;
+  padding: 20px;
   height: 710px;
   background-color: #fff;
-  margin: 150px auto;
+  border: 1px solid #7e98df;
+  border-radius: 20px;
+  margin: 20px auto;
 }
 
 .title {
@@ -157,7 +153,7 @@ export default {
   border-top: 0px;
   border-left: 0px;
   border-right: 0px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #848484;
   border-radius: 0px;
 }
 

@@ -84,9 +84,12 @@ export default {
 <style scoped>
 .login {
   width: 500px;
-  height: 710px;
+  padding: 20px;
+  height: 510px;
   background-color: #fff;
-  margin: 150px auto;
+  border: 1px solid #7e98df;
+  border-radius: 20px;
+  margin: 50px auto;
 }
 
 .title {
@@ -99,7 +102,7 @@ export default {
   border-top: 0px;
   border-left: 0px;
   border-right: 0px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #848484;
   border-radius: 0px;
 }
 
