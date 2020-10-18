@@ -465,7 +465,7 @@
             style="width: 95%; border: 1px solid darkgrey; margin: 0 auto"
           ></div>
         </b-row>
-        <div style="height: 550px; overflow-x: hidden;">
+        <div class="all-chat-room-msg">
           <b-row v-for="(value, index) in roomMessages" :key="index">
             <div class="flexx">
               <div
@@ -494,19 +494,16 @@
             </div>
           </b-row>
         </div>
-        <b-row style="position: absolute; bottom:30px; right:20px; left: 20px">
-          <b-col lg="10" width>
+        <b-row class="absolute-send-msg">
+          <b-col lg="10" class="input-msg">
             <b-form-input
+              class="input-msg"
               v-model="text"
               placeholder="Enter Message"
             ></b-form-input>
           </b-col>
-          <b-col lg="2" class="">
-            <b-button
-              @click="sendMessage()"
-              style="width: 100%"
-              variant="primary"
-              class="send-msg"
+          <b-col lg="2" class="send-msg">
+            <b-button @click="sendMessage()" variant="primary" class="send-msg"
               >SEND</b-button
             >
           </b-col>
@@ -528,7 +525,6 @@ export default {
   },
   created() {
     this.getUserById(this.user.user_id)
-    // this.getUser()
     this.$getLocation()
       .then(coordinates => {
         this.coordinates = {
@@ -579,7 +575,9 @@ export default {
       friendsId: '',
       showAllFriends: false,
       showAllRoom: false,
-      dataImg: ''
+      dataImg: '',
+      oldRoom: '',
+      newRoom: ''
     }
   },
   methods: {
@@ -674,9 +672,6 @@ export default {
           }, 2000)
         })
     },
-    // getUser() {
-    //   this.getUserById(this.user.user_id)
-    // },
     myFriends() {
       this.getAllFriends(this.user.user_id)
 
@@ -726,12 +721,18 @@ export default {
       this.sendMessages(setData)
       this.socket.emit('mixinsMsg', setData)
       this.text = ''
-
-      // SOCKET IO SENDMSG
     },
     // ALL ROOM CHAT -------------------
     showRoomChat(value) {
-      console.log(value)
+      if (this.oldRoom) {
+        this.socket.emit('changeRoom', {
+          oldRoom: this.oldRoom,
+          newRoom: value.room_id
+        })
+        this.oldRoom = value.room_id
+      } else {
+        this.oldRoom = value.room_id
+      }
       this.roomId = value.room_id
       this.friendsId = value.friends_id
       this.getMessage(value.room_id)
@@ -851,7 +852,6 @@ export default {
 .plus {
   margin-top: 6px;
   margin-left: -23px;
-  /* width: 22px; */
 }
 
 .form {
@@ -874,7 +874,6 @@ export default {
   width: 82px;
   height: 82px;
   border-radius: 30px;
-  /* background-color: red; */
 }
 
 .img-profile-chat {
@@ -887,10 +886,48 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  /* background-color: aqua; */
+}
+
+.all-chat-room-msg {
+  height: 550px;
+  overflow-x: hidden;
+}
+
+.absolute-send-msg {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  left: 20px;
+}
+
+.send-msg {
+  width: 100%;
+  margin-left: 0px;
+}
+.input-msg {
+  width: 100%;
+  margin-left: 0px;
 }
 
 @media (max-width: 576px) {
+  .all-chat-room-msg {
+    height: 350px;
+    overflow-x: hidden;
+  }
+
+  .absolute-send-msg {
+    position: relative;
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .send-msg {
+    width: 90%;
+  }
+  .input-msg {
+    width: 90%;
+    margin-left: 7px;
+  }
   .title {
     text-align: center;
   }

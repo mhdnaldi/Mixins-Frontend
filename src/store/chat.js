@@ -2,15 +2,14 @@ import axios from 'axios'
 import io from 'socket.io-client'
 export default {
   state: {
-    room: [], //
-    setUserRoom: {}, //
-    // ---- USER ROOM
-    roomChat: [], //
-    message: [], //
-    allRoom: [], //
-    allRoomMsg: [], //
-    socket: io('http://localhost:5000') //
-    // socket: io('https://backend-mixins.fwdev.online') //
+    room: [],
+    setUserRoom: {},
+    roomChat: [],
+    message: [],
+    allRoom: [],
+    allRoomMsg: [],
+    socket: io('http://localhost:5000')
+    // socket: io('https://backend-mixins.fwdev.online')
   },
   mutations: {
     setRoom(state, payload) {
@@ -28,12 +27,11 @@ export default {
     setRoomMessages(state, payload) {
       state.allRoomMsg = payload[0].messages
     },
+    // SOCKET ---------------------
     setUserRoom(state, payload) {
-      // ?????
       state.setUserRoom = payload
     },
     socketMsg(state, payload) {
-      // SOCKET
       state.allRoomMsg.push(payload)
     }
   },
@@ -110,7 +108,6 @@ export default {
     room(state) {
       return state.room
     },
-    // ROOM CHAT
     roomChat(state) {
       return state.roomChat
     },
