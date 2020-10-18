@@ -4,8 +4,8 @@
       <b-col cols lg="3" style="box-shadow: 3px 3px 10px rgba(0,0,0,0.4);">
         <b-container>
           <b-row style="height: 85px" align-content="center">
-            <b-col cols lg="10" sm="12" class="title"><h5>Mixins</h5></b-col>
-            <b-col cols lg="2" sm="12"
+            <b-col cols lg="10" class="title"><h5>Mixins</h5></b-col>
+            <b-col cols lg="2"
               ><img
                 id="popover-target-1"
                 src="../assets/img/Menu.png"
@@ -13,7 +13,7 @@
                 class="img-menu"
               /><b-popover
                 target="popover-target-1"
-                triggers="click"
+                triggers="click focus"
                 placement="leftbottom"
               >
                 <div
@@ -558,7 +558,7 @@ export default {
         lat: 0,
         lng: 0
       },
-      socket: io('http://localhost:5000'),
+      socket: io(`${[process.env.VUE_APP_SOCKET_IO]}`),
       form: {
         user_name: '',
         user_password: '',
@@ -576,8 +576,7 @@ export default {
       showAllFriends: false,
       showAllRoom: false,
       dataImg: '',
-      oldRoom: '',
-      newRoom: ''
+      oldRoom: ''
     }
   },
   methods: {
@@ -926,10 +925,11 @@ export default {
   }
   .input-msg {
     width: 90%;
-    margin-left: 7px;
+    margin-left: 8px;
   }
   .title {
     text-align: center;
+    margin-left: -10px;
   }
 
   .img-menu {

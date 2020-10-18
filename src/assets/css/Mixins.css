@@ -1,0 +1,177 @@
+.sender {
+  background: #7e98df;
+  border-radius: 35px 35px 35px 10px;
+  text-align: left;
+  color: #fff;
+  max-width: 260px;
+  word-wrap: break-word;
+}
+
+.flexx {
+  display: flex;
+  justify-content: space-between;
+  text-align: left;
+  align-items: center;
+  height: 60px;
+  margin: 20px;
+}
+
+.popover {
+  background-color: #7e98df;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 35px 10px 35px 35px;
+  width: 180px;
+  margin-left: -190px;
+}
+
+.flex {
+  display: grid;
+  grid-template-columns: 67px 150px 40px;
+  justify-content: center;
+  align-content: center;
+  gap: 10px;
+  word-wrap: break-word;
+  padding: 5px;
+  transition: 0.3;
+  border-radius: 4px;
+}
+
+.flex:hover {
+  background-color: #c7c8ca;
+}
+
+.notif {
+  border-radius: 50px;
+  font-size: 11px;
+  background-color: #7e98df;
+  margin-top: -5px;
+}
+
+.profiles {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.button {
+  height: 50px;
+  border-radius: 20px;
+  background-color: #fff;
+  border-color: #fff;
+  color: #111;
+  font-weight: bold;
+  margin: 0 5px;
+  font-size: 20px;
+}
+
+.button:hover {
+  background-color: #7e98df;
+  border-color: #7e98df;
+}
+.button:visited {
+  background-color: #7e98df;
+  border-color: #7e98df;
+}
+
+.search {
+  margin-top: 7px;
+  padding-left: 24px;
+  margin-right: -10px;
+}
+.plus {
+  margin-top: 6px;
+  margin-left: -23px;
+}
+
+.form {
+  border-color: white;
+  font-size: 15px;
+  margin-left: 6px;
+}
+
+.title {
+  padding-left: 30px;
+  text-align: left;
+  color: #7e98df;
+  font-size: 24px;
+}
+.img-menu {
+  margin-left: -20px;
+}
+
+.img-profile {
+  width: 82px;
+  height: 82px;
+  border-radius: 30px;
+}
+
+.img-profile-chat {
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+}
+
+.img-profile-sender {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.all-chat-room-msg {
+  height: 550px;
+  overflow-x: hidden;
+}
+
+.absolute-send-msg {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  left: 20px;
+}
+
+.send-msg {
+  width: 100%;
+  margin-left: 0px;
+}
+.input-msg {
+  width: 100%;
+  margin-left: 0px;
+}
+
+@media (max-width: 576px) {
+  .all-chat-room-msg {
+    height: 350px;
+    overflow-x: hidden;
+  }
+
+  .absolute-send-msg {
+    position: relative;
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .send-msg {
+    width: 90%;
+  }
+  .input-msg {
+    width: 90%;
+    margin-left: 8px;
+  }
+  .title {
+    text-align: center;
+    margin-left: -10px;
+  }
+
+  .img-menu {
+    margin-left: 100%;
+  }
+
+  .send-msg {
+    margin-top: 10px;
+  }
+}

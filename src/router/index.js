@@ -5,7 +5,7 @@ import Mixins from '../views/Mixins.vue'
 import About from '../views/About.vue'
 import Chat from '../views/Chat.vue'
 import Login from '../views/auth/Login.vue'
-import Register from '../views/auth/Register.vue'
+import Regis from '../views/auth/Register.vue'
 import Forgot from '../views/auth/Forgot.vue'
 import NewPassword from '../views/auth/NewPassword.vue'
 import Friend from '../views/FriendsList.vue'
@@ -21,7 +21,7 @@ const routes = [
   //   meta: { requiresAuth: true }
   // },
   {
-    path: '/mixins',
+    path: '/',
     name: 'Mixins',
     component: Mixins,
     meta: { requiresAuth: true }
@@ -35,7 +35,7 @@ const routes = [
   {
     path: '/register',
     name: 'Register',
-    component: Register,
+    component: Regis,
     meta: { requiresVisitor: true }
   },
   {
@@ -85,7 +85,7 @@ router.beforeEach((to, from, next) => {
   } else if (to.matched.some(record => record.meta.requiresVisitor)) {
     if (store.getters.isLogin) {
       next({
-        path: '/mixins'
+        path: '/'
       })
     } else {
       next()

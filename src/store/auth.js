@@ -94,7 +94,6 @@ export default {
             `${process.env.VUE_APP_URL}users/forgot-password?user_email=${payload}`
           )
           .then(res => {
-            console.log(res.data)
             resolve(res.data)
           })
           .catch(err => {
@@ -107,7 +106,6 @@ export default {
         axios
           .patch(`${process.env.VUE_APP_URL}users/change-password`, payload)
           .then(res => {
-            console.log(res.data.data.msg)
             resolve(res.data)
           })
           .catch(err => {

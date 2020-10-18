@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <div class="shadow">
-      <router-link to="/mixins"><h1 class="my-2">MIXINS</h1></router-link>
+      <router-link to="/"><h1 class="my-2">MIXINS</h1></router-link>
     </div>
     <Empty v-if="myFriends <= 1" />
     <div class="grid" v-if="myFriends">
@@ -150,6 +150,7 @@ export default {
 .profiles {
   width: 150px;
   margin: 20px 0;
+  border-radius: 10px;
 }
 
 .button {

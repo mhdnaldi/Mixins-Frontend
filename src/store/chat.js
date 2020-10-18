@@ -8,8 +8,7 @@ export default {
     message: [],
     allRoom: [],
     allRoomMsg: [],
-    socket: io('http://localhost:5000')
-    // socket: io('https://backend-mixins.fwdev.online')
+    socket: io(`${process.env.VUE_APP_SOCKET_IO}`)
   },
   mutations: {
     setRoom(state, payload) {

@@ -117,7 +117,7 @@ export default {
             showConfirmButton: false,
             timer: 1500
           })
-          this.$router.push('/mixins')
+          this.$router.push('/')
         })
         .catch(err => {
           this.$swal.fire({
