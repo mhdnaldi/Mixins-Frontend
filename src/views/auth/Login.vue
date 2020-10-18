@@ -4,13 +4,6 @@
       <b-row>
         <b-col cols="12">
           <h3 class="title">Login</h3>
-
-          <b-alert variant="success" class="mt-3" v-bind:show="alert">{{
-            msg
-          }}</b-alert>
-          <b-alert variant="danger" class="mt-3" v-bind:show="alertErr">{{
-            msg
-          }}</b-alert>
         </b-col>
       </b-row>
       <b-row>
@@ -109,10 +102,7 @@ export default {
       form: {
         user_email: '',
         user_password: ''
-      },
-      alert: false,
-      alertErr: false,
-      msg: ''
+      }
     }
   },
   methods: {
@@ -120,18 +110,23 @@ export default {
     onSubmit() {
       this.loginUser(this.form)
         .then(res => {
-          this.alert = true
-          this.msg = res.msg
-          setTimeout(() => {
-            this.$router.push('/mixins')
-          }, 2000)
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: res.msg,
+            showConfirmButton: false,
+            timer: 1500
+          })
+          this.$router.push('/mixins')
         })
         .catch(err => {
-          this.alertErr = true
-          this.msg = err
-          setTimeout(() => {
-            this.alertErr = false
-          }, 2000)
+          this.$swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: err,
+            showConfirmButton: false,
+            timer: 1500
+          })
         })
     },
     onReset() {

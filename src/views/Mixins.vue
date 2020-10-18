@@ -4,8 +4,8 @@
       <b-col cols lg="3" style="box-shadow: 3px 3px 10px rgba(0,0,0,0.4);">
         <b-container>
           <b-row style="height: 85px" align-content="center">
-            <b-col cols lg="10" class="title"><h5>Mixins</h5></b-col>
-            <b-col cols lg="2"
+            <b-col cols lg="10" sm="12" class="title"><h5>Mixins</h5></b-col>
+            <b-col cols lg="2" sm="12"
               ><img
                 id="popover-target-1"
                 src="../assets/img/Menu.png"
@@ -144,7 +144,7 @@
                         @click="editProfile"
                         >Edit</b-button
                       >
-                      <b-button variant="danger" @click="logout"
+                      <b-button variant="danger" @click="logoutBtn"
                         >Logout</b-button
                       >
                     </div>
@@ -323,13 +323,14 @@
                     />
                   </div>
                   <div class="mt-1">
-                    <div></div>
-                    <h6 style="text-align: left; font-size: 18px; ">
+                    <h6
+                      style="padding-top: 16px;text-align: left; font-size: 18px; "
+                    >
                       {{ value.user_name }}
                     </h6>
-                    <p style="text-align: left; margin-top: px">
+                    <!-- <p style="text-align: left; margin-top: px">
                       {{ value.user_email }}
-                    </p>
+                    </p> -->
                   </div>
                   <div class="mt-1">
                     <img
@@ -505,6 +506,7 @@
               @click="sendMessage()"
               style="width: 100%"
               variant="primary"
+              class="send-msg"
               >SEND</b-button
             >
           </b-col>
@@ -525,13 +527,22 @@ export default {
     Empty
   },
   created() {
-    this.getUser()
+    this.getUserById(this.user.user_id)
+    // this.getUser()
     this.$getLocation()
       .then(coordinates => {
         this.coordinates = {
           lat: coordinates.lat,
           lng: coordinates.lng
         }
+        const setLocation = {
+          id: this.user.user_id,
+          data: {
+            longitude: this.coordinates.lng,
+            latitude: this.coordinates.lat
+          }
+        }
+        this.updateLocation(setLocation)
       })
       .catch(err => {
         alert(err)
@@ -579,6 +590,7 @@ export default {
       }
     },
     ...mapActions([
+      'updateLocation',
       'editUser',
       'getUserById',
       'addFriend',
@@ -594,6 +606,22 @@ export default {
     ...mapMutations(['setSearch', 'setUserRoom', 'socketMsg']),
     handleFile(event) {
       this.form.user_image = event.target.files[0]
+    },
+    logoutBtn() {
+      this.$swal
+        .fire({
+          title: 'ARE YOU SURE ?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'Cancel'
+        })
+        .then(result => {
+          if (result.isConfirmed) {
+            this.$swal.fire('Bye', '', 'success')
+            this.logout()
+          }
+        })
     },
     addFriends() {
       const setData = {
@@ -646,9 +674,9 @@ export default {
           }, 2000)
         })
     },
-    getUser() {
-      this.getUserById(this.user.user_id)
-    },
+    // getUser() {
+    //   this.getUserById(this.user.user_id)
+    // },
     myFriends() {
       this.getAllFriends(this.user.user_id)
 
@@ -766,9 +794,10 @@ export default {
   display: grid;
   grid-template-columns: 67px 150px 40px;
   justify-content: center;
+  align-content: center;
   gap: 10px;
   word-wrap: break-word;
-  padding-top: 10px;
+  padding: 5px;
   transition: 0.3;
   border-radius: 4px;
 }
@@ -859,5 +888,19 @@ export default {
   height: 40px;
   border-radius: 10px;
   /* background-color: aqua; */
+}
+
+@media (max-width: 576px) {
+  .title {
+    text-align: center;
+  }
+
+  .img-menu {
+    margin-left: 100%;
+  }
+
+  .send-msg {
+    margin-top: 10px;
+  }
 }
 </style>

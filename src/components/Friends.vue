@@ -1,5 +1,9 @@
 <template>
   <b-container fluid>
+    <div class="shadow">
+      <router-link to="/mixins"><h1 class="my-2">MIXINS</h1></router-link>
+    </div>
+    <Empty v-if="myFriends <= 1" />
     <div class="grid" v-if="myFriends">
       <div class="friend-list" v-for="(value, index) in myFriends" :key="index">
         <img
@@ -14,30 +18,47 @@
           :src="port + value.user_image"
           alt=""
         />
-        <p>Name: {{ value.user_name }}</p>
-        <p>Email: {{ value.user_email }}</p>
-        <p>Phone: {{ value.user_phone }}</p>
-        <button class="bg-danger mb-1" @click="deleteFriends(value.user_id)">
-          DELETE
-        </button>
+        <p style="text-align: left" class="ml-3">Name: {{ value.user_name }}</p>
+        <p style="text-align: left" class="ml-3">
+          Email: {{ value.user_email }}
+        </p>
+        <p style="text-align: left" class="ml-3">
+          Phone: {{ value.user_phone }}
+        </p>
+        <b-button class="del button" @click="deleteFriends(value.user_id)">
+          <b-icon
+            icon="
+trash-fill"
+          ></b-icon>
+        </b-button>
         <div>
-          <GmapMap
-            :center="{ lat: coordinates.lat, lng: coordinates.lng }"
-            :zoom="10"
-            map-type-id="terrain"
-            style="width: 90%; height: 200px; margin:10px auto;"
+          <b-button
+            class="map button"
+            v-b-modal.modal-1
+            @click="location(value.user_id)"
+            >LOCATION</b-button
           >
-            <GmapMarker
-              :position="{
-                lat: coordinates.lat,
-                lng: coordinates.lng
-              }"
-              :clickable="true"
-              :draggable="true"
-              icon="https://img.icons8.com/color/48/000000/map-pin.png
+          <b-modal id="modal-1" title="Location" hide-footer>
+            <div>
+              <GmapMap
+                :center="{ lat: coordinates.lat, lng: coordinates.lng }"
+                :zoom="10"
+                map-type-id="terrain"
+                style="width: 90%; height: 300px; margin:10px auto;"
+              >
+                <GmapMarker
+                  :position="{
+                    lat: coordinates.lat,
+                    lng: coordinates.lng
+                  }"
+                  :clickable="true"
+                  :draggable="true"
+                  icon="https://img.icons8.com/color/48/000000/map-pin.png
 "
-            />
-          </GmapMap>
+                />
+              </GmapMap>
+            </div>
+          </b-modal>
         </div>
       </div>
     </div>
@@ -45,11 +66,11 @@
 </template>
 
 <script>
-// import Empty from './EmptyFriends'
+import Empty from './EmptyFriends'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
-    // Empty
+    Empty
   },
   data() {
     return {
@@ -62,20 +83,19 @@ export default {
     }
   },
   created() {
-    this.$getLocation()
-      .then(coordinates => {
-        this.coordinates = {
-          lat: coordinates.lat,
-          lng: coordinates.lng
-        }
-      })
-      .catch(err => {
-        alert(err)
-      })
     this.getAllFriends(this.userData.user_id)
   },
   methods: {
-    ...mapActions(['getAllFriends', 'deleteFriend']),
+    ...mapActions(['getAllFriends', 'deleteFriend', 'getUserById']),
+    location(payload) {
+      this.getUserById(payload)
+      if (this.user[0]) {
+        this.coordinates = {
+          lat: parseFloat(this.user[0].latitude),
+          lng: parseFloat(this.user[0].longitude)
+        }
+      }
+    },
     deleteFriends(payload) {
       const setData = {
         id: this.userData.user_id,
@@ -99,7 +119,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['myFriends', 'userData'])
+    ...mapGetters(['myFriends', 'userData', 'user'])
   }
 }
 </script>
@@ -115,9 +135,9 @@ export default {
 .friend-list {
   margin: auto;
   width: 300px;
-  height: 550px;
+  height: 420px;
   color: #111;
-  background-color: #eee;
+  background-color: #7e98df;
   border-radius: 10px;
   transition: 0.3s;
 }
@@ -130,5 +150,59 @@ export default {
 .profiles {
   width: 150px;
   margin: 20px 0;
+}
+
+.button {
+  width: 100px;
+  display: inline-block;
+}
+
+.del {
+  background-color: rgb(206, 16, 16);
+  border-color: rgb(206, 16, 16);
+  width: 50px;
+  margin-bottom: 10px;
+}
+.map {
+  background-color: rgb(17, 153, 89);
+  border-color: rgb(17, 153, 89);
+  margin: 10px 0;
+}
+
+.del:hover {
+  background-color: rgb(206, 16, 16);
+  border-color: rgb(206, 16, 16);
+  transform: scale(0.91);
+}
+
+.map:hover {
+  background-color: rgb(17, 153, 89);
+  border-color: rgb(17, 153, 89);
+  transform: scale(0.91);
+}
+
+h1 {
+  text-align: center;
+  color: #7e98df;
+}
+
+.shadow {
+  /* background-color: red; */
+  width: 100%;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+  height: 55px;
+}
+
+@media (max-width: 578px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-list {
+    margin: 10px auto;
+    background-color: #7e98df;
+    border-radius: 10px;
+    transition: 0.3s;
+  }
 }
 </style>

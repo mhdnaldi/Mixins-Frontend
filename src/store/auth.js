@@ -114,6 +114,21 @@ export default {
             reject(err.response.data.msg)
           })
       })
+    },
+    updateLocation(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .patch(
+            `${process.env.VUE_APP_URL}users/update-position/${payload.id}`,
+            payload.data
+          )
+          .then(res => {
+            resolve(res.data)
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      })
     }
   },
   getters: {
