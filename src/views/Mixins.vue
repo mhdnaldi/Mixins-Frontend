@@ -52,6 +52,34 @@
                           </div></b-col
                         >
                       </b-row>
+                      <b-row align-content="center" class="mb-2">
+                        <b-col cols lg="12"
+                          ><div class="center">
+                            <p style="text-align: center; color:#7e98df">
+                              {{ profile[0].user_bio }}
+                            </p>
+                          </div>
+                          <div style="text-align: center">
+                            <b-button size="sm" variant="dark" v-b-modal.bio-1
+                              ><b-icon icon="tools"></b-icon
+                            ></b-button>
+
+                            <b-modal id="bio-1" title="Change bio" hide-footer>
+                              <b-form-group id="input-group-1">
+                                <b-form-input
+                                  id="input-1"
+                                  v-model="formBio.user_bio"
+                                  type="text"
+                                  placeholder="New status"
+                                ></b-form-input>
+                              </b-form-group>
+                              <b-button variant="success" @click="patchBio"
+                                >Change</b-button
+                              >
+                            </b-modal>
+                          </div></b-col
+                        >
+                      </b-row>
                       <b-row align-content="center">
                         <b-col cols lg="12"
                           ><div class="center">
@@ -256,7 +284,7 @@
         <b-row align-content="center">
           <b-col cols lg="12"
             ><div class="center">
-              <p>{{ profile[0].user_email }}</p>
+              <p style="color: #7e98df">{{ profile[0].user_bio }}</p>
             </div></b-col
           >
         </b-row>
@@ -368,7 +396,7 @@
                       {{ value.user_name }}
                     </h6>
                     <p style="text-align: left; margin-top: px">
-                      {{ value.user_phone }}
+                      DISINI SOCKETNYA
                     </p>
                   </div>
                   <div class="mt-1">
@@ -388,7 +416,7 @@
       <b-col v-show="showChat" cols lg="9" style="position: relative">
         <b-row>
           <div class="flexx" style="width:100%; ">
-            <div class="flexx" v-if="roomChat[0]">
+            <div class="flexx" style="position: relative" v-if="roomChat[0]">
               <div class="img-profile-chat" style="display:inline-block;">
                 <img
                   v-if="roomChat[0].user_image === null"
@@ -406,6 +434,18 @@
               <h5 style="display:inline-block; margin-left: 20px">
                 {{ roomChat[0].user_name }}
               </h5>
+              <p
+                v-if="roomChat[0].user_status === 1"
+                style="position: absolute; left: 82px; top: 40px; font-size: 12px; color:#7e98df"
+              >
+                Online
+              </p>
+              <p
+                v-if="roomChat[0].user_status === 0"
+                style="position: absolute; left: 82px; top: 40px; font-size: 12px; color:darkgrey"
+              >
+                Offline
+              </p>
             </div>
             <div v-b-modal.modal-sm.modal-3 v-if="roomChat[0]">
               <b-modal id="modal-3" title="Profile" hide-footer>
@@ -525,6 +565,7 @@ export default {
   },
   created() {
     this.getUserById(this.user.user_id)
+    this.patchStatus({ id: this.user.user_id, data: { status: 1 } })
     this.$getLocation()
       .then(coordinates => {
         this.coordinates = {
@@ -565,6 +606,9 @@ export default {
         user_phone: '',
         user_image: {}
       },
+      formBio: {
+        userBio: ''
+      },
       port: process.env.VUE_APP_URL,
       friendsEmail: '',
       searchName: '',
@@ -598,7 +642,9 @@ export default {
       'getUserRoom',
       'sendMessages',
       'getAllRoom',
-      'getMessage'
+      'getMessage',
+      'editBio',
+      'patchStatus'
     ]),
     ...mapMutations(['setSearch', 'setUserRoom', 'socketMsg']),
     handleFile(event) {
@@ -615,6 +661,7 @@ export default {
         })
         .then(result => {
           if (result.isConfirmed) {
+            this.patchStatus({ id: this.user.user_id, data: { status: 0 } })
             this.$swal.fire('Bye', '', 'success')
             this.logout()
           }
@@ -669,6 +716,37 @@ export default {
           setTimeout(() => {
             this.alertErr = false
           }, 2000)
+        })
+    },
+    patchBio() {
+      const setData = {
+        id: this.user.user_id,
+        data: {
+          user_bio: this.formBio.user_bio
+        }
+      }
+      this.editBio(setData)
+        .then(res => {
+          this.$swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: res,
+            showConfirmButton: false,
+            timer: 1500
+          })
+          this.getUserById(this.user.user_id)
+          this.formBio = {
+            user_bio: ''
+          }
+        })
+        .catch(err => {
+          this.$swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: err,
+            showConfirmButton: false,
+            timer: 1500
+          })
         })
     },
     myFriends() {

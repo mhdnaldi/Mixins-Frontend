@@ -127,6 +127,21 @@ export default {
             reject(err.response.data.msg)
           })
       })
+    },
+    patchStatus(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .patch(
+            `${process.env.VUE_APP_URL}notification/${payload.id}`,
+            payload.data
+          )
+          .then(res => {
+            resolve(res.data)
+          })
+          .catch(err => {
+            reject(err.response.data.msg)
+          })
+      })
     }
   },
   getters: {

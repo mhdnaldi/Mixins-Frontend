@@ -60,6 +60,23 @@ export default {
           })
       })
     },
+    editBio(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .patch(
+            `${process.env.VUE_APP_URL}users/bio/${payload.id}`,
+            payload.data
+          )
+          .then(res => {
+            console.log(res)
+            resolve(res.data.msg)
+          })
+          .catch(err => {
+            console.log(err)
+            reject(err.response.data.msg)
+          })
+      })
+    },
     addFriend(context, payload) {
       return new Promise((resolve, reject) => {
         axios
