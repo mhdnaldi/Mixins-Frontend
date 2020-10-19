@@ -8,9 +8,16 @@ export default {
     message: [],
     allRoom: [],
     allRoomMsg: [],
-    socket: io(`${process.env.VUE_APP_SOCKET_IO}`)
+    socket: io(`${process.env.VUE_APP_SOCKET_IO}`),
+    idUserLogin: '',
+    notif: ''
   },
   mutations: {
+    idUserLogin(state, payload) {
+      console.log(payload)
+      state.idUserLogin = payload
+      // console.log(state.idUserLogin)
+    },
     setRoom(state, payload) {
       state.room = payload[0]
     },
@@ -69,6 +76,7 @@ export default {
           .get(`${process.env.VUE_APP_URL}chat/get-room/${payload}`)
           .then(response => {
             context.commit('setAllRoom', response.data.data)
+            context.commit('idUserLogin', payload)
             resolve(response)
           })
           .catch(err => {

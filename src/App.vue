@@ -15,6 +15,7 @@ export default {
   created() {
     this.interceptorRequest()
     this.interceptorResponse()
+    // PROSES SOCKET IO JOIN BY USER ID
   }
 }
 </script>
