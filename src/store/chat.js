@@ -10,13 +10,11 @@ export default {
     allRoomMsg: [],
     socket: io(`${process.env.VUE_APP_SOCKET_IO}`),
     idUserLogin: '',
-    notif: ''
+    totalNotif: []
   },
   mutations: {
     idUserLogin(state, payload) {
-      console.log(payload)
       state.idUserLogin = payload
-      // console.log(state.idUserLogin)
     },
     setRoom(state, payload) {
       state.room = payload[0]
@@ -32,6 +30,10 @@ export default {
     },
     setRoomMessages(state, payload) {
       state.allRoomMsg = payload[0].messages
+    },
+    totalNotification(state, payload) {
+      state.totalNotif = payload
+      console.log(state.totalNotif[1][0].total)
     },
     // SOCKET ---------------------
     setUserRoom(state, payload) {
@@ -109,6 +111,22 @@ export default {
             reject(err.response.data.msg)
           })
       })
+    },
+    getTotalNotification(context, payload) {
+      return new Promise((resolve, reject) => {
+        axios
+          .get(
+            `${process.env.VUE_APP_URL}notification/chat-notification/${payload}`
+          )
+          .then(res => {
+            context.commit('totalNotification', res.data.data)
+            resolve(res.data.data.msg)
+          })
+          .catch(err => {
+            console.log(err.response)
+            reject(err.response)
+          })
+      })
     }
   },
   getters: {
@@ -123,6 +141,9 @@ export default {
     },
     allRoomMsg(state) {
       return state.allRoomMsg
+    },
+    totalNotif(state) {
+      return state.totalNotif
     }
   }
 }

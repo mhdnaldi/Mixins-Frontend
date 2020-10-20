@@ -8,7 +8,7 @@
   </p>
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/50584044/95975020-ddb09d80-0e3f-11eb-89da-0ee4afe5290f.jpg" />
+<img src="https://user-images.githubusercontent.com/50584044/96541797-f4854300-12ca-11eb-94d2-d114e667c2ca.jpg" />
 </p>
 
 ## About The Project
@@ -41,10 +41,11 @@ VUE_APP_URL = URL BACKEND
 
 ## Acknowledgements
 
-- [Axios](https://www.npmjs.com/package/axios)
-- [Vuex](https://vuex.vuejs.org/)
+- [Axios]
+- [Vuex]
 - [Bootstrap-vue]
 - [Vue-googlemaps]
+- [Vue-socket]
 - [Vue-geolocation]
 - [Vuex-persistedstate]
 

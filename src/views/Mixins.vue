@@ -333,8 +333,8 @@
             style="height: 320px; overflow-x:hidden"
           >
             <!-- PREEEN -->
-            <b-row class="mt-2" v-for="(value, index) in friends" :key="index">
-              <b-col
+            <b-row class="mt-2">
+              <b-col v-for="(value, index) in friends" :key="index"
                 ><div class="flex">
                   <div class="profiles">
                     <img
@@ -391,14 +391,17 @@
                     />
                   </div>
                   <div class="mt-1">
-                    <div></div>
                     <h6 style="text-align: left; font-size: 18px; ">
                       {{ value.user_name }}
                     </h6>
-                    <p style="text-align: left; margin-top: px">
-                      DISINI SOCKETNYA
-                    </p>
+                    <!-- <p
+                      style="text-align: left; margin-top: px"
+                      v-if="totalNotif[index][0].total > 0"
+                    >
+                      {{ totalNotif[index][0].total }}
+                    </p> -->
                   </div>
+
                   <div class="mt-1">
                     <img
                       @click="showRoomChat(value)"
@@ -406,8 +409,9 @@
                       src="../assets/img/chat.png"
                       alt=""
                     />
-                  </div></div
-              ></b-col>
+                  </div>
+                </div>
+              </b-col>
             </b-row>
           </section>
         </div>
@@ -589,9 +593,17 @@ export default {
     this.socket.on('chatMixins', data => {
       this.socketMsg(data)
     })
+    // -----------------------------------
+    this.socket.on('notifMsg', data => {
+      this.notificationMsg(data.text_message)
+      console.log(this.notificationMsg)
+      console.log(data)
+    })
+    // -----------------------------------
   },
   data() {
     return {
+      notificationMsg: '',
       alert: false,
       alertErr: false,
       msgs: '',
@@ -620,7 +632,9 @@ export default {
       showAllFriends: false,
       showAllRoom: false,
       dataImg: '',
-      oldRoom: ''
+      oldRoom: '',
+      // total notification
+      oldNotif: ''
     }
   },
   methods: {
@@ -761,6 +775,7 @@ export default {
       this.showAllFriends = false
       this.showAllRoom = true
       this.getAllRoom(this.user.user_id)
+      this.getTotalNotification(this.user.user_id) // here
     },
     search() {
       const setData = {
@@ -795,8 +810,15 @@ export default {
         }
       }
 
+      const setDataNotif = {
+        user_id: this.user.user_id,
+        friends_id: this.friendsId,
+        text_message: this.text
+      }
+
       this.sendMessages(setData)
       this.socket.emit('mixinsMsg', setData)
+      this.socket.emit('lastMsg', setDataNotif) //
       this.text = ''
     },
     // ALL ROOM CHAT -------------------
@@ -834,7 +856,8 @@ export default {
       roomData: 'room',
       roomChat: 'roomChat',
       allRooms: 'allRoom',
-      roomMessages: 'allRoomMsg'
+      roomMessages: 'allRoomMsg',
+      totalNotif: 'totalNotif'
     })
   }
 }
