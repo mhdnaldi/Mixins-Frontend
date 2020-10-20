@@ -1,4 +1,4 @@
-<h1 align='center'>Vue JS - Glootie</h1>
+<h1 align='center'>Vue JS - Mixins</h1>
   <p align="center">
     <a href="https://mixins.netlify.app">View Demo</a>
     ·
@@ -24,7 +24,7 @@ Mixins is a web application for a real time chat, it developed using vue js and 
 
 1. <a href="https://nodejs.org/en/download/">Node Js</a>
 2. Node_modules `npm install` or `yarn install`
-3. Backend API Technoker [`here`](https://mixins-backend.fwdev.online)
+3. Backend API Mixins [`here`](https://mixins-backend.fwdev.online)
 
 ## Getting Started
 
@@ -35,6 +35,7 @@ Mixins is a web application for a real time chat, it developed using vue js and 
 
 ```sh
 VUE_APP_URL = URL BACKEND
+VUE_APP_SOCKET_IO = URL BACKEND
 ```
 
 5. Type `npm run serve`
