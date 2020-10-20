@@ -68,11 +68,9 @@ export default {
             payload.data
           )
           .then(res => {
-            console.log(res)
             resolve(res.data.msg)
           })
           .catch(err => {
-            console.log(err)
             reject(err.response.data.msg)
           })
       })

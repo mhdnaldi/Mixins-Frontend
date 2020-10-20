@@ -43,7 +43,7 @@
                       </b-row>
                       <b-row align-content="center" class="mt-3">
                         <b-col cols lg="12"
-                          ><div class="center">
+                          ><div class="center" v-if="profile[0]">
                             <h6
                               style="font-size: 20px; font-weight:500; text-align: center"
                             >
@@ -54,7 +54,7 @@
                       </b-row>
                       <b-row align-content="center" class="mb-2">
                         <b-col cols lg="12"
-                          ><div class="center">
+                          ><div class="center" v-if="profile[0]">
                             <p style="text-align: center; color:#7e98df">
                               {{ profile[0].user_bio }}
                             </p>
@@ -394,12 +394,7 @@
                     <h6 style="text-align: left; font-size: 18px; ">
                       {{ value.user_name }}
                     </h6>
-                    <!-- <p
-                      style="text-align: left; margin-top: px"
-                      v-if="totalNotif[index][0].total > 0"
-                    >
-                      {{ totalNotif[index][0].total }}
-                    </p> -->
+                    <p>{{ notificationMsg }}</p>
                   </div>
 
                   <div class="mt-1">
@@ -568,7 +563,6 @@ export default {
     Empty
   },
   created() {
-    this.getUserById(this.user.user_id)
     this.patchStatus({ id: this.user.user_id, data: { status: 1 } })
     this.$getLocation()
       .then(coordinates => {
@@ -590,14 +584,30 @@ export default {
       })
   },
   mounted() {
+    this.getUserById(this.user.user_id)
+    // CLEAR LOCALSTORAGE
+    window.onbeforeunload = function() {
+      window.onunload = function() {
+        window.localStorage.isMySessionActive = 'false'
+      }
+      return undefined
+    }
+
+    window.onload = function() {
+      window.localStorage.isMySessionActive = 'true'
+    }
+    //
     this.socket.on('chatMixins', data => {
       this.socketMsg(data)
     })
     // -----------------------------------
-    this.socket.on('notifMsg', data => {
-      this.notificationMsg(data.text_message)
-      console.log(this.notificationMsg)
-      console.log(data)
+    this.socket.on('notification', data => {
+      this.notificationMsg = data.text_message
+      this.$bvToast.toast(`${this.notificationMsg}`, {
+        title: `Notification`,
+        variant: 'success',
+        solid: true
+      })
     })
     // -----------------------------------
   },
@@ -775,7 +785,7 @@ export default {
       this.showAllFriends = false
       this.showAllRoom = true
       this.getAllRoom(this.user.user_id)
-      this.getTotalNotification(this.user.user_id) // here
+      // this.getTotalNotification(this.user.user_id) // here
     },
     search() {
       const setData = {
