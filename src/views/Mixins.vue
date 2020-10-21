@@ -356,9 +356,9 @@
                     >
                       {{ value.user_name }}
                     </h6>
-                    <!-- <p style="text-align: left; margin-top: px">
-                      {{ value.user_email }}
-                    </p> -->
+                    <p style="text-align: left; margin-top: px">
+                      {{ value.user_bio }}
+                    </p>
                   </div>
                   <div class="mt-1">
                     <img
@@ -556,7 +556,6 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Empty from '../components/EmptyChat'
 import io from 'socket.io-client'
-// import axios from 'axios'
 export default {
   name: 'Mixins',
   components: {
@@ -592,15 +591,13 @@ export default {
       }
       return undefined
     }
-
     window.onload = function() {
       window.localStorage.isMySessionActive = 'true'
     }
-    //
+
     this.socket.on('chatMixins', data => {
       this.socketMsg(data)
     })
-    // -----------------------------------
     this.socket.on('notification', data => {
       this.notificationMsg = data.text_message
       this.$bvToast.toast(`${this.notificationMsg}`, {
@@ -609,7 +606,6 @@ export default {
         solid: true
       })
     })
-    // -----------------------------------
   },
   data() {
     return {
@@ -642,9 +638,7 @@ export default {
       showAllFriends: false,
       showAllRoom: false,
       dataImg: '',
-      oldRoom: '',
-      // total notification
-      oldNotif: ''
+      oldRoom: ''
     }
   },
   methods: {
@@ -775,7 +769,6 @@ export default {
     },
     myFriends() {
       this.getAllFriends(this.user.user_id)
-
       this.showAllFriends = true
       this.showAllRoom = false
       this.showEmpty = true
@@ -785,7 +778,6 @@ export default {
       this.showAllFriends = false
       this.showAllRoom = true
       this.getAllRoom(this.user.user_id)
-      // this.getTotalNotification(this.user.user_id) // here
     },
     search() {
       const setData = {
@@ -795,7 +787,6 @@ export default {
       this.setSearch(setData)
       this.searchFriends()
     },
-    // ---- FRIEND CREATE ROOM ---------------------
     createRoom(data) {
       const setData = {
         user_id: this.user.user_id,
@@ -828,10 +819,9 @@ export default {
 
       this.sendMessages(setData)
       this.socket.emit('mixinsMsg', setData)
-      this.socket.emit('lastMsg', setDataNotif) //
+      this.socket.emit('lastMsg', setDataNotif)
       this.text = ''
     },
-    // ALL ROOM CHAT -------------------
     showRoomChat(value) {
       if (this.oldRoom) {
         this.socket.emit('changeRoom', {
