@@ -23,6 +23,9 @@
           Email: {{ value.user_email }}
         </p>
         <p style="text-align: left" class="ml-3">
+          Status: {{ value.user_bio }}
+        </p>
+        <p style="text-align: left" class="ml-3">
           Phone: {{ value.user_phone }}
         </p>
         <b-button class="del button" @click="deleteFriends(value.user_id)">

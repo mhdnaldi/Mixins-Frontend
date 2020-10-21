@@ -356,9 +356,6 @@
                     >
                       {{ value.user_name }}
                     </h6>
-                    <p style="text-align: left; margin-top: px">
-                      {{ value.user_bio }}
-                    </p>
                   </div>
                   <div class="mt-1">
                     <img
@@ -484,6 +481,9 @@
                       ><div class="center">
                         <p style="text-align: center">
                           {{ roomChat[0].user_email }}
+                        </p>
+                        <p style="text-align: center">
+                          {{ roomChat[0].user_bio }}
                         </p>
                       </div></b-col
                     >
