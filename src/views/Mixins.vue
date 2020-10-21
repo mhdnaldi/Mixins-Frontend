@@ -394,7 +394,9 @@
                     <h6 style="text-align: left; font-size: 18px; ">
                       {{ value.user_name }}
                     </h6>
-                    <p>{{ notificationMsg }}</p>
+                    <p style="text-align: left; color:#7e98df">
+                      {{ value.user_bio }}
+                    </p>
                   </div>
 
                   <div class="mt-1">
@@ -599,8 +601,7 @@ export default {
       this.socketMsg(data)
     })
     this.socket.on('notification', data => {
-      this.notificationMsg = data.text_message
-      this.$bvToast.toast(`${this.notificationMsg}`, {
+      this.$bvToast.toast(`${data.user_name}: ${data.text_message}`, {
         title: `Notification`,
         variant: 'success',
         solid: true
@@ -609,7 +610,6 @@ export default {
   },
   data() {
     return {
-      notificationMsg: '',
       alert: false,
       alertErr: false,
       msgs: '',
@@ -617,7 +617,7 @@ export default {
         lat: 0,
         lng: 0
       },
-      socket: io(`${[process.env.VUE_APP_SOCKET_IO]}`),
+      socket: io(`${process.env.VUE_APP_SOCKET_IO}`),
       form: {
         user_name: '',
         user_password: '',
@@ -813,6 +813,7 @@ export default {
 
       const setDataNotif = {
         user_id: this.user.user_id,
+        user_name: this.user.user_name,
         friends_id: this.friendsId,
         text_message: this.text
       }
