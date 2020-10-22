@@ -138,7 +138,7 @@ export default {
 .friend-list {
   margin: auto;
   width: 300px;
-  height: 420px;
+  height: 460px;
   color: #111;
   background-color: #7e98df;
   border-radius: 10px;
